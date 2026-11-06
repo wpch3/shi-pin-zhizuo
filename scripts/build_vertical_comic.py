@@ -114,9 +114,7 @@ def bubble(im, speaker, text, box, accent="#786B62", tail="bottom"):
 
 def scene_page(index):
     src = Image.open(ROOT / f"art/vertical-chapter-01/shot-{index:02d}.png").convert("RGB")
-    if index == 3:
-        src = clean_upper_wall(src, 430)
-    elif index == 4:
+    if index == 4:
         src = clean_upper_wall(src, 350)
     src = grade_art(src, seed=index)
     im = fit(src, (W, H))
@@ -140,8 +138,8 @@ def scene_page(index):
     elif index == 2:
         bubble(im, "江望舒", "这次我会待很久，先把以前少陪你的时间补回来。", (90, 180, 1200, 0), "#8A6C64")
     elif index == 3:
-        bubble(im, "江辰希", "二哥，今天先陪我！", (70, 90, 780, 0), "#8C697A")
-        bubble(im, "江望舒", "我刚回来，今天先归我。", (550, 440, 810, 0), "#8A6C64")
+        bubble(im, "江辰希", "二哥，今天先陪我！", (55, 80, 630, 0), "#8C697A")
+        bubble(im, "江望舒", "我刚回来，今天先归我。", (755, 80, 630, 0), "#8A6C64")
     elif index == 4:
         bubble(im, "小满", "小叔先陪我搭城堡！", (180, 160, 1080, 0), "#B07D78")
     elif index == 5:
@@ -171,6 +169,16 @@ def scene_page(index):
         d.text((145, 2310), "《星辰落进灯火里》· 第一话 完", fill=MUTED, font=ft(28))
     d = ImageDraw.Draw(im)
     d.text((1240, 2480), f"{index:02d} / 07", fill="#6F6862", font=ft(24))
+    return im
+
+
+def cover_page():
+    src = Image.open(ROOT / "art/vertical-chapter-01/cover.png").convert("RGB")
+    im = fit(src, (W, H))
+    d = ImageDraw.Draw(im)
+    d.text((70, 35), "《星辰落进灯火里》第一话", fill="#F5EEE2", font=ft(32), stroke_width=2, stroke_fill="#172033")
+    d.text((65, 92), "我姐休假回来", fill="#F4D35E", font=ft(88), stroke_width=6, stroke_fill="#172033")
+    d.text((65, 200), "直接把我预约了", fill="#F4D35E", font=ft(88), stroke_width=6, stroke_fill="#172033")
     return im
 
 
@@ -246,6 +254,9 @@ def family_card():
 
 
 comic_pages = []
+cover = cover_page()
+cover.save(OUT_COMIC / "page-00-cover.png")
+comic_pages.append(cover)
 for i in range(1, 8):
     page = scene_page(i)
     page.save(OUT_COMIC / f"page-{i:02d}.png")

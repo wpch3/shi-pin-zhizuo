@@ -1,7 +1,7 @@
 # 当前正式交付
 
-- `deliverables/第一话_竖屏全页漫画.pdf`：7页，1440×2560，9:16，每镜一张完整画面。
-- `deliverables/vertical-chapter-01/`：上述7页的独立PNG，供用户直接制作视频。
+- `deliverables/第一话_竖屏全页漫画.pdf`：封面1页＋正片7页，1440×2560，9:16，每镜一张完整画面。
+- `deliverables/vertical-chapter-01/`：封面及上述7页的独立PNG，供用户直接制作视频。
 - `deliverables/完整人设与合照.pdf`：7张完整人设卡及1张全员合照。
 - `deliverables/complete-character-sheets/`：上述8页的独立PNG。
 - `data/characters.json`：用户最新补全人设及已经确认的正式姓名。
