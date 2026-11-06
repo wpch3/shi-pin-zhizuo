@@ -1,3 +1,15 @@
+# 当前正式交付
+
+- `deliverables/第一话_竖屏全页漫画.pdf`：7页，1440×2560，9:16，每镜一张完整画面。
+- `deliverables/vertical-chapter-01/`：上述7页的独立PNG，供用户直接制作视频。
+- `deliverables/完整人设与合照.pdf`：7张完整人设卡及1张全员合照。
+- `deliverables/complete-character-sheets/`：上述8页的独立PNG。
+- `data/characters.json`：用户最新补全人设及已经确认的正式姓名。
+- `docs/第一话_竖屏全页分镜.md`：最新制作规格与七页正文。
+- `scripts/build_vertical_comic.py`：竖屏漫画、人设卡和PDF构建脚本。
+
+早期四格漫画与 `stories/` 中故事均为历史草案，不再作为正式制作依据。
+
 # 《回家以后》短篇漫画
 
 基于仓库内用户 PDF 制作的纯漫画项目。保留 PDF 中七位家庭成员的人设原文与视觉锚点，不制作语音，不依赖视频。
