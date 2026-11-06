@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,6 +22,46 @@ def ft(size):
 
 def fit(im, size):
     return im.resize(size, Image.Resampling.LANCZOS)
+
+
+def grade_art(im, seed=0):
+    """Unify the light source and restore depth without burying ink lines."""
+    im = ImageEnhance.Contrast(im.convert("RGB")).enhance(1.065)
+    im = ImageEnhance.Color(im).enhance(0.97)
+    a = np.asarray(im).astype(np.float32)
+    h, w = a.shape[:2]
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    xx, yy = xx / max(1, w - 1), yy / max(1, h - 1)
+    # Broad warm light from upper left; cooler, slightly denser lower-right shadows.
+    light = 1.035 + 0.035 * (1 - xx) + 0.018 * (1 - yy)
+    light -= 0.032 * ((xx - 0.42) ** 2 + (yy - 0.40) ** 2)
+    a *= light[..., None]
+    a[..., 0] *= 1.012
+    a[..., 2] *= 0.988
+    a[..., 2] += 1.2 * xx * yy
+    rng = np.random.default_rng(seed)
+    a += rng.normal(0, 0.45, (h, w, 1))
+    im = Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGB")
+    return im.filter(ImageFilter.UnsharpMask(radius=1.1, percent=55, threshold=4))
+
+
+def soft_shadow(im, box, opacity=42, blur=28):
+    layer = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    d.ellipse(box, fill=(74, 62, 50, opacity))
+    layer = layer.filter(ImageFilter.GaussianBlur(blur))
+    im.paste(layer, (0, 0), layer)
+
+
+def clean_upper_wall(im, cut):
+    # Replace generator-added writing/empty balloons with a continuous wall gradient.
+    a = np.asarray(im.convert("RGB")).copy()
+    cut = min(cut, im.height)
+    left = a[:cut, :35].mean(axis=1)
+    right = a[:cut, -35:].mean(axis=1)
+    wall = ((left + right) / 2).astype(np.uint8)
+    a[:cut] = wall[:, None, :]
+    return Image.fromarray(a, "RGB")
 
 
 def wrap_lines(draw, text, fnt, width):
@@ -74,7 +114,23 @@ def bubble(im, speaker, text, box, accent="#786B62", tail="bottom"):
 
 def scene_page(index):
     src = Image.open(ROOT / f"art/vertical-chapter-01/shot-{index:02d}.png").convert("RGB")
+    if index == 3:
+        src = clean_upper_wall(src, 430)
+    elif index == 4:
+        src = clean_upper_wall(src, 350)
+    src = grade_art(src, seed=index)
     im = fit(src, (W, H))
+    # Soft contact shadows anchor the figures and furniture to the floor.
+    shadows = {
+        1: (470, 2310, 1040, 2490),
+        2: (390, 2160, 1260, 2410),
+        3: (220, 2260, 1240, 2480),
+        4: (150, 2240, 1270, 2470),
+        5: (40, 2240, 1380, 2500),
+        6: (30, 2260, 1390, 2510),
+        7: (30, 2200, 1350, 2480),
+    }
+    soft_shadow(im, shadows[index], opacity=30 if index >= 5 else 36, blur=34)
     d = ImageDraw.Draw(im)
     if index == 1:
         d.rounded_rectangle((60, 55, 1380, 360), radius=42, fill="#FFFDF8E8")
@@ -87,8 +143,6 @@ def scene_page(index):
         bubble(im, "江辰希", "二哥，今天先陪我！", (70, 90, 780, 0), "#8C697A")
         bubble(im, "江望舒", "我刚回来，今天先归我。", (550, 440, 810, 0), "#8A6C64")
     elif index == 4:
-        # Remove the source image's empty speech balloon before typesetting.
-        d.rectangle((0, 0, W, 640), fill="#FAF8F2")
         bubble(im, "小满", "小叔先陪我搭城堡！", (180, 160, 1080, 0), "#B07D78")
     elif index == 5:
         bubble(im, "江星野", "别抢，我把时间都排好了。", (120, 170, 1160, 0), "#72806B")
@@ -120,23 +174,26 @@ def scene_page(index):
     return im
 
 
-def portrait_crop(path):
-    im = Image.open(path).convert("RGB")
-    a = np.asarray(im).astype(np.int16)
-    corners = np.concatenate((a[:20, :20].reshape(-1, 3), a[:20, -20:].reshape(-1, 3), a[-20:, :20].reshape(-1, 3), a[-20:, -20:].reshape(-1, 3)))
-    bg = np.median(corners, axis=0)
-    diff = np.max(np.abs(a - bg), axis=2)
-    mask = diff > 22
-    rows = (mask.sum(axis=1) > max(8, im.width * 0.008))
-    cols = (mask.sum(axis=0) > max(8, im.height * 0.008))
-    ys, xs = np.where(rows)[0], np.where(cols)[0]
-    if len(xs) and len(ys):
-        x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
-        pad_x, pad_y = int((x1 - x0) * 0.12), int((y1 - y0) * 0.06)
-        x0, x1 = max(0, x0 - pad_x), min(im.width, x1 + pad_x)
-        y0, y1 = max(0, y0 - pad_y), min(im.height, y1 + pad_y)
-        im = im.crop((x0, y0, x1, y1))
-    return im
+def portrait_cutout(path):
+    im = Image.open(path).convert("RGBA")
+    # Remove only the connected studio backdrop, preserving white shirts and socks.
+    seeds = [(0, 0), (im.width - 1, 0), (0, im.height - 1),
+             (im.width - 1, im.height - 1), (im.width // 2, 0),
+             (im.width // 2, im.height - 1), (0, im.height // 2),
+             (im.width - 1, im.height // 2)]
+    for seed in seeds:
+        if im.getpixel(seed)[3]:
+            ImageDraw.floodfill(im, seed, (255, 255, 255, 0), thresh=48)
+    alpha = im.getchannel("A").filter(ImageFilter.GaussianBlur(0.65))
+    im.putalpha(alpha)
+    solid = np.asarray(alpha) > 30
+    cols = np.flatnonzero(solid.sum(axis=0) > 10)
+    rows = np.flatnonzero(solid.sum(axis=1) > 10)
+    if len(cols) and len(rows):
+        im = im.crop((int(cols[0]), int(rows[0]), int(cols[-1]) + 1, int(rows[-1]) + 1))
+    rgb = grade_art(im.convert("RGB"), seed=31)
+    rgb.putalpha(im.getchannel("A"))
+    return rgb
 
 
 def character_card(c, index):
@@ -149,11 +206,20 @@ def character_card(c, index):
     d.text((90, 275), "《星辰落进灯火里》角色设定", fill=MUTED, font=ft(28))
     d.line((90, 340, 1350, 340), fill=accent, width=3)
     d.rounded_rectangle((70, 390, 1370, 1390), radius=45, fill="#F1ECE5")
-    portrait = portrait_crop(ROOT / "art/characters" / c["file"])
-    max_w, max_h = 1170, 940
+    # A soft studio glow and contact shadow keep the cutout from looking pasted on.
+    glow = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.ellipse((280, 430, 1160, 1330), fill=(255, 252, 244, 78))
+    glow = glow.filter(ImageFilter.GaussianBlur(85))
+    im.paste(glow, (0, 0), glow)
+    portrait = portrait_cutout(ROOT / "art/characters" / c["file"])
+    max_w, max_h = 1100, 900
     scale = min(max_w / portrait.width, max_h / portrait.height)
     portrait = portrait.resize((round(portrait.width * scale), round(portrait.height * scale)), Image.Resampling.LANCZOS)
-    im.paste(portrait, ((W - portrait.width) // 2, 420 + (940 - portrait.height) // 2))
+    px = (W - portrait.width) // 2
+    py = 420 + (900 - portrait.height) // 2
+    soft_shadow(im, (px - 35, py + portrait.height - 25, px + portrait.width + 35, py + portrait.height + 40), opacity=25, blur=20)
+    im.paste(portrait, (px, py), portrait)
     d = ImageDraw.Draw(im)
     d.text((90, 1460), "人物介绍", fill=accent, font=ft(34))
     y = 1535
@@ -168,6 +234,7 @@ def character_card(c, index):
 
 def family_card():
     src = Image.open(ROOT / "art/family/group-portrait.png").convert("RGB")
+    src = grade_art(src, seed=8)
     im = fit(src, (W, H))
     d = ImageDraw.Draw(im)
     d.rounded_rectangle((55, 45, 1385, 275), radius=40, fill="#FFFDF8ED")
