@@ -129,7 +129,7 @@ pages.append(im)
 
 im = scene('shot-02.png')
 speech(im, ['这次我会多住一阵子，', '以前没时间陪你的，', '慢慢补回来。'],
-       (265, 275), (535, 720), 28)
+       (255, 335), (535, 720), 28)
 num(im, 2)
 im.save(OUT/'page-02.png')
 pages.append(im)
