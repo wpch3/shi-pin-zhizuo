@@ -27,7 +27,7 @@
 ## 原始素材
 
 - `art/reference/family-character-design-v3.jpg`：用户指定的五人角色及画风基准。
-- `art/character-v3/`：从基准拆分的大哥、姐姐、二弟、妹妹、小满，以及同风格补全的父母。
+- `art/character-v3/`：依据确认基准逐张重新生成的七人单独立绘，不再使用从旧参考图直接裁切的人设图。
 - `art/family-v3/group.png`：七人合照。
 - `art/vertical-v3/`：7张无字正片场景。
 
