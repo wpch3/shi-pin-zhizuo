@@ -1,7 +1,7 @@
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
-from speech_bubble_geometry import oval_tail
+from speech_bubble_geometry import oval_speech
 
 ROOT = Path(__file__).resolve().parents[1]
 W, H = 1440, 1920
@@ -46,11 +46,10 @@ def speech(im, lines, center, target, size=30):
     cx, cy = center
     box = (round(cx-bw/2), round(cy-bh/2), round(cx+bw/2), round(cy+bh/2))
 
-    tail, _ = oval_tail(center, (bw, bh), target, tail_length=30, tail_width=28, bend=2)
-    # 先画框体，再以尾巴填充遮住根部椭圆弧；只描两侧，不描封闭底边。
-    d.ellipse(box, fill=PAPER, outline=INK, width=3)
-    d.polygon(tail, fill=PAPER)
-    d.line(tail, fill=INK, width=3, joint='curve')
+    outline = oval_speech(center, (bw, bh), target, tail_length=30, tail_width=28, bend=2)
+    # 椭圆与尾巴是同一闭合外轮廓；根部没有第二层椭圆弧或三角底边。
+    d.polygon(outline, fill=PAPER)
+    d.line(outline+[outline[0]], fill=INK, width=3, joint='curve')
 
     y = cy-text_h/2
     for line, width, b in zip(lines, widths, boxes):

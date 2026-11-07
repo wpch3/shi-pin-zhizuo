@@ -5,7 +5,7 @@ https://github.com/splargdotcom/speechbubble
 Original geometry.js copyright (c) 2025-2026 Louie Savva.
 See assets/licenses/speechbubble-MIT.txt for the complete license.
 """
-from math import atan2, cos, hypot, sin
+from math import atan2, cos, hypot, pi, sin
 
 
 def clamp(value, low, high):
@@ -46,3 +46,23 @@ def oval_tail(center, size, target, tail_length=30, tail_width=28, bend=2):
     points = [quad_point(base_a, control_a, tip, i/16) for i in range(17)]
     points += [quad_point(tip, control_b, base_b, i/16) for i in range(1, 17)]
     return points, tip
+
+
+def oval_speech(center, size, target, tail_length=30, tail_width=28, bend=2):
+    """Return ONE closed outer silhouette, with no ellipse arc inside the tail.
+
+    This is the sampled equivalent of the source ovalSpeechPath: baseA -> tail
+    -> baseB -> the long ellipse arc -> baseA. There is no separate body layer.
+    """
+    cx, cy = center
+    rx, ry = size[0] / 2, size[1] / 2
+    theta = atan2((target[1]-cy)/ry, (target[0]-cx)/rx)
+    delta = clamp(tail_width/max(80, min(rx, ry)*2), 0.08, 0.48)
+    tail, _ = oval_tail(center, size, target, tail_length, tail_width, bend)
+    start = theta + delta
+    end = theta - delta + 2*pi
+    steps = max(160, round((rx+ry)*1.5))
+    body = [(cx+cos(start+(end-start)*i/steps)*rx,
+             cy+sin(start+(end-start)*i/steps)*ry)
+            for i in range(steps+1)]
+    return tail + body[1:]
