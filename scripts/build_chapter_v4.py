@@ -2,6 +2,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 from speech_bubble_geometry import oval_speech
+from speech_text_layout import measure_speech_text
 
 ROOT = Path(__file__).resolve().parents[1]
 W, H = 1440, 1920
@@ -32,30 +33,17 @@ def cover_title(d, s, size=66):
 
 
 def speech(im, lines, center, target, size=30):
-    """测量文字生成椭圆；采用MIT开源Speechbubble的椭圆曲线尾巴。"""
+    """可见文字精确居中；椭圆长弧与尾巴采用同一闭合外轮廓。"""
     d = ImageDraw.Draw(im)
     f = ft(size)
-    gap = round(size * 0.34)
-    boxes = [d.textbbox((0, 0), line, font=f) for line in lines]
-    widths = [b[2] - b[0] for b in boxes]
-    line_h = size + gap
-    text_h = len(lines) * line_h - gap
-    pad_x, pad_y = round(size * 1.12), round(size * 0.84)
-    bw = max(widths) + 2 * pad_x + 16
-    bh = text_h + 2 * pad_y + 14
-    cx, cy = center
-    box = (round(cx-bw/2), round(cy-bh/2), round(cx+bw/2), round(cy+bh/2))
-
+    layout = measure_speech_text(d, lines, center, f, size)
+    bw, bh = layout['bubble_size']
     outline = oval_speech(center, (bw, bh), target, tail_length=30, tail_width=28, bend=2)
-    # 椭圆与尾巴是同一闭合外轮廓；根部没有第二层椭圆弧或三角底边。
     d.polygon(outline, fill=PAPER)
     d.line(outline+[outline[0]], fill=INK, width=3, joint='curve')
-
-    y = cy-text_h/2
-    for line, width, b in zip(lines, widths, boxes):
-        d.text((cx-width/2-b[0], y-b[1]), line, font=f, fill=INK)
-        y += line_h
-    return box
+    for x, y, line in layout['positions']:
+        d.text((x, y), line, font=f, fill=INK)
+    return layout['box']
 
 
 def caption(im, title, lines, xy, size=27):
@@ -114,7 +102,7 @@ pages = []
 im = scene('cover.png')
 d = ImageDraw.Draw(im)
 cover_title(d, '休假回来的姐姐……')
-speech(im, ['星野，这次长假，', '先陪我，好不好？'], (270, 210), (620, 360), 30)
+speech(im, ['星野，这次长假，', '先陪我，好不好？'], (520, 220), (910, 465), 30)
 d = ImageDraw.Draw(im)
 d.text((60, 1780), '《二弟的休息日被全家预约了》 第一话', font=ft(25), fill=RED, stroke_width=2, stroke_fill=PAPER)
 num(im)
@@ -122,14 +110,14 @@ im.save(OUT/'page-00-cover.png')
 pages.append(im)
 
 im = scene('shot-01.png')
-speech(im, ['项目搞定！', '从今天起，我是家里蹲。'], (330, 180), (735, 400), 30)
+speech(im, ['项目搞定！', '从今天起，我是家里蹲。'], (390, 110), (735, 400), 30)
 num(im, 1)
 im.save(OUT/'page-01.png')
 pages.append(im)
 
 im = scene('shot-02.png')
 speech(im, ['这次我会多住一阵子，', '以前没时间陪你的，', '慢慢补回来。'],
-       (255, 335), (535, 720), 28)
+       (255, 335), (510, 750), 28)
 num(im, 2)
 im.save(OUT/'page-02.png')
 pages.append(im)
@@ -149,7 +137,7 @@ im.save(OUT/'page-04.png')
 pages.append(im)
 
 im = scene('shot-05.png')
-speech(im, ['别抢啦，', '我把时间都排好了。'], (1200, 270), (1060, 690), 28)
+speech(im, ['别抢啦，', '我把时间都排好了。'], (1220, 235), (760, 330), 28)
 perspective_schedule(
     im, '星野的日程表',
     ['1. 陪姐姐散步', '2. 陪妹妹挑书', '3. 陪小满搭城堡，', '   再讲三遍故事'],
@@ -161,8 +149,8 @@ im.save(OUT/'page-05.png')
 pages.append(im)
 
 im = scene('shot-06.png')
-speech(im, ['安排得挺好，', '不过得先把他休息的时间排上。'], (1090, 120), (888, 528), 28)
-speech(im, ['我也有自己的', '行程啊？'], (210, 250), (584, 760), 30)
+speech(im, ['安排得挺好，', '不过得先把他', '休息的时间排上。'], (950, 130), (760, 510), 28)
+speech(im, ['我也有自己的', '行程啊？'], (450, 235), (584, 760), 30)
 perspective_schedule(
     im, '星野的日程表',
     ['1. 陪姐姐散步', '2. 陪妹妹挑书', '3. 陪小满搭城堡，', '   再讲三遍故事', '4. 二弟睡觉'],
@@ -175,7 +163,7 @@ pages.append(im)
 
 im = scene('shot-07.png')
 caption(im, '妈妈转述', ['你哥哥跟你说，项目结束就好，', '早点休息，别熬夜。'], (55, 55), 27)
-speech(im, ['小叔，等你休息好了，', '再陪我讲故事嘛。'], (200, 835), (390, 1070), 27)
+speech(im, ['小叔，等你休息好了，', '再陪我讲故事嘛。'], (220, 835), (390, 1070), 27)
 d = ImageDraw.Draw(im)
 d.rounded_rectangle((50, 1795, 585, 1870), radius=18, fill=INK)
 d.text((75, 1815), '二弟被预约的第一天，正式开始。', font=ft(22), fill=YELLOW)
