@@ -1,124 +1,221 @@
 from pathlib import Path
-from PIL import Image,ImageDraw,ImageFont
+from PIL import Image, ImageDraw, ImageFont
+import math
 import numpy as np
 
-ROOT=Path(__file__).resolve().parents[1]
-W,H=1440,1920
-SRC=ROOT/'art/chapter-01-v4'
-OUT=ROOT/'deliverables/full-v4/chapter-01';OUT.mkdir(parents=True,exist_ok=True)
-VERTICAL_OUT=ROOT/'deliverables/full-v4-vertical/chapter-01';VERTICAL_OUT.mkdir(parents=True,exist_ok=True)
-# 用户提供的竖屏视频参考原图为1696×2528；等比画布为1440×2146（四舍五入）。
-# 定版的1440×1920页面不做缩放或重采样，只在上下各补113像素暖纸色。
-VERTICAL_SIZE=(1440,2146)
-FONT=ROOT/'assets/fonts/NotoSansCJKsc-Bold.otf'
-PAPER='#F8F4EB';INK='#292B2C';RED='#92504C';YELLOW='#E9BD4F';MUTED='#746E67'
-def ft(n):return ImageFont.truetype(str(FONT),n)
-def wrap(d,s,f,width):
- out=[];line=''
- for ch in s:
-  if d.textbbox((0,0),line+ch,font=f)[2]>width and line:out.append(line);line=ch
-  else:line+=ch
- if line:out.append(line)
- return out
-def text(d,s,xy,width,size=32,fill=INK,gap=12):
- x,y=xy;f=ft(size)
- for line in wrap(d,s,f,width):d.text((x,y),line,font=f,fill=fill);y+=size+gap
- return y
-def cover_title(d,s,size=66):d.text((38,28),s,font=ft(size),fill=YELLOW,stroke_width=4,stroke_fill=INK)
-def bubble(im,speaker,s,box,size=30,dark=False,tail='left'):
- """全话统一暖白圆角对白；深色只用于手机/转述消息。"""
- d=ImageDraw.Draw(im);x,y,w,h=box;fill=INK if dark else PAPER;body=PAPER if dark else INK
- # 先画尾巴，再画框体遮住三角底边；只描两侧，接口不能多一条横线。
- points=None
- if tail=='left':points=((x+60,y+h-3),(x+105,y+h-3),(x+76,y+h+27))
- elif tail=='right':points=((x+w-105,y+h-3),(x+w-60,y+h-3),(x+w-76,y+h+27))
- elif tail=='up-left':points=((x+60,y+3),(x+105,y+3),(x+76,y-27))
- if points:
-  d.polygon(points,fill=fill);d.line((points[0],points[2],points[1]),fill=INK,width=3,joint='curve')
- d.rounded_rectangle((x,y,x+w,y+h),radius=28,fill=fill,outline=INK,width=3)
- d.text((x+24,y+15),speaker,font=ft(21),fill=YELLOW if dark else RED)
- text(d,s,(x+24,y+55),w-48,size=size,fill=body,gap=9)
-def scene(name):return Image.open(SRC/name).convert('RGB').resize((W,H),Image.Resampling.LANCZOS)
-def num(im,n=None):
- d=ImageDraw.Draw(im);s='COVER' if n is None else f'{n:02d} / 07';d.text((1250,1855),s,font=ft(18),fill=MUTED)
-def clean(im,box):ImageDraw.Draw(im).rectangle(box,fill=PAPER)
-def perspective_schedule(im,title_s,rows,quad,font_scale=1.0):
- """统一最终字号；3倍画布透视变换后降采样，避免小字发虚。"""
- sw,sh=780,520;ss=3
- layer=Image.new('RGBA',(sw*ss,sh*ss),(0,0,0,0));d=ImageDraw.Draw(layer)
- d.text((35*ss,18*ss),title_s,font=ft(round(54*ss*font_scale)),fill=RED)
- y=115*ss
- for row in rows:
-  if isinstance(row,tuple):
-   d.text((35*ss,y),row[0],font=ft(round(44*ss*font_scale)),fill=INK);d.text((430*ss,y),row[1],font=ft(round(44*ss*font_scale)),fill=INK)
-  else:d.text((40*ss,y),row,font=ft(round(44*ss*font_scale)),fill=INK)
-  y+=85*ss
- src=((0,0),(sw*ss,0),(sw*ss,sh*ss),(0,sh*ss));a=[];b=[]
- for (x,y),(u,v) in zip(quad,src):
-  x*=ss;y*=ss
-  a.extend(([x,y,1,0,0,0,-u*x,-u*y],[0,0,0,x,y,1,-v*x,-v*y]));b.extend((u,v))
- coeffs=np.linalg.solve(np.asarray(a,dtype=float),np.asarray(b,dtype=float))
- warped=layer.transform((W*ss,H*ss),Image.Transform.PERSPECTIVE,coeffs,Image.Resampling.BICUBIC)
- warped=warped.resize((W,H),Image.Resampling.LANCZOS)
- im.paste(warped,(0,0),warped)
+ROOT = Path(__file__).resolve().parents[1]
+W, H = 1440, 1920
+SRC = ROOT / 'art/chapter-01-v4'
+OUT = ROOT / 'deliverables/full-v4/chapter-01'
+OUT.mkdir(parents=True, exist_ok=True)
+VERTICAL_OUT = ROOT / 'deliverables/full-v4-vertical/chapter-01'
+VERTICAL_OUT.mkdir(parents=True, exist_ok=True)
+VERTICAL_SIZE = (1440, 2146)
+FONT = ROOT / 'assets/fonts/NotoSansCJKsc-Bold.otf'
+PAPER = '#F8F4EB'
+INK = '#292B2C'
+RED = '#92504C'
+YELLOW = '#E9BD4F'
+MUTED = '#746E67'
 
-pages=[]
-im=scene('cover.png');d=ImageDraw.Draw(im);cover_title(d,'休假回来的姐姐……')
-bubble(im,'江望舒','星野，这次长假，先陪我。',(55,155,430,180),29,tail='right')
-d=ImageDraw.Draw(im);d.text((60,1780),'《星辰落进灯火里》 第一话',font=ft(25),fill=RED)
-num(im);im.save(OUT/'page-00-cover.png');pages.append(im)
 
-# 普通正片不再逐页添加黄色解析标题。
-im=scene('shot-01.png')
-bubble(im,'江星野','项目搞定！从今天起，我是家里蹲。',(55,120,455,195),29,tail='right')
-num(im,1);im.save(OUT/'page-01.png');pages.append(im)
+def ft(n):
+    return ImageFont.truetype(str(FONT), n)
 
-im=scene('shot-02.png')
-bubble(im,'江望舒','这次我会待很久，先把以前少陪你的时间补回来。',(70,80,625,245),30,tail='right')
-num(im,2);im.save(OUT/'page-02.png');pages.append(im)
 
-im=scene('shot-03.png')
-bubble(im,'江望舒','我刚回来，今天先归我。',(50,125,340,175),25,tail='right')
-bubble(im,'江辰希','二哥，今天先陪我！',(980,205,370,175),26)
-num(im,3);im.save(OUT/'page-03.png');pages.append(im)
+def scene(name):
+    return Image.open(SRC / name).convert('RGB').resize((W, H), Image.Resampling.LANCZOS)
 
-im=scene('shot-04.png')
-# 妹妹张嘴并指向小满，是在对小满加入争抢作出反应；补足动作对应的台词。
-bubble(im,'江辰希','小满，连你也来抢呀？',(825,70,500,165),27,tail='right')
-bubble(im,'小满','小叔先陪我搭城堡！',(50,535,335,175),25,tail='right')
-num(im,4);im.save(OUT/'page-04.png');pages.append(im)
 
-im=scene('shot-05.png')
-bubble(im,'江星野','别抢，我把时间都排好了。',(55,115,530,180),29,tail='right')
-perspective_schedule(im,'星野的日程表',['1. 陪姐姐散步','2. 陪妹妹挑书','3. 陪小满搭城堡，再讲三遍故事'],((910,1660),(1197,1499),(1351,1632),(1064,1814)))
-num(im,5);im.save(OUT/'page-05.png');pages.append(im)
+def cover_title(d, s, size=66):
+    d.text((38, 28), s, font=ft(size), fill=YELLOW, stroke_width=4, stroke_fill=INK)
 
-im=scene('shot-06.png')
-bubble(im,'沈静宜','安排得很好，但是得先把他的休息排上。',(55,105,650,185),28,tail='right')
-bubble(im,'江星野','我也有自己的行程啊？',(55,345,465,160),27)
-# 原纸面保持完整，文字直接透视映射到纸内，不叠加补色多边形。
-perspective_schedule(im,'星野的日程表',['1. 陪姐姐散步','2. 陪妹妹挑书','3. 陪小满搭城堡，再讲三遍故事','4. 二弟睡觉'],((610,1400),(735,1310),(935,1390),(820,1485)),font_scale=1.0)
-num(im,6);im.save(OUT/'page-06.png');pages.append(im)
 
-im=scene('shot-07.png')
-# 妈妈不在画面中：使用无尾巴的转述消息框，避免误指向沙发上的二弟。
-bubble(im,'妈妈','你哥哥跟你说，项目结束就好，早点休息，别熬夜。',(55,55,700,220),27,dark=True,tail=None)
-# 小满气泡在下方居中，用向上的尾巴明确指向小满，不压任何人物头部。
-bubble(im,'小满','小叔休息好了，就陪我讲故事！',(380,1600,850,150),27,tail='up-left')
-d=ImageDraw.Draw(im);d.rounded_rectangle((50,1795,520,1870),radius=18,fill=INK)
-d.text((75,1815),'二弟被预约的第一天，正式开始。',font=ft(22),fill=YELLOW)
-num(im,7);im.save(OUT/'page-07.png');pages.append(im)
+def quad_point(p0, p1, p2, t):
+    return ((1-t)**2*p0[0] + 2*(1-t)*t*p1[0] + t*t*p2[0],
+            (1-t)**2*p0[1] + 2*(1-t)*t*p1[1] + t*t*p2[1])
 
-pages[0].save(ROOT/'deliverables/第一话_V4_精细化重制.pdf',save_all=True,append_images=pages[1:],resolution=150)
-vertical_pages=[]
+
+def speech(im, lines, center, target, size=30):
+    """按真实文字块生成椭圆；无姓名标签，尾巴从椭圆边缘朝嘴部延伸约一半距离。"""
+    d = ImageDraw.Draw(im)
+    f = ft(size)
+    gap = round(size * 0.34)
+    boxes = [d.textbbox((0, 0), line, font=f) for line in lines]
+    widths = [b[2] - b[0] for b in boxes]
+    line_h = size + gap
+    text_h = len(lines) * line_h - gap
+    pad_x, pad_y = round(size * 1.12), round(size * 0.84)
+    bw = max(widths) + 2 * pad_x + 16
+    bh = text_h + 2 * pad_y + 14
+    cx, cy = center
+    box = (round(cx-bw/2), round(cy-bh/2), round(cx+bw/2), round(cy+bh/2))
+
+    # 椭圆数学边界上的尾巴根部；尖端只走剩余距离约55%，不会跨越半页找人。
+    dx, dy = target[0]-cx, target[1]-cy
+    rx, ry = bw/2, bh/2
+    scale = 1 / math.sqrt((dx/rx)**2 + (dy/ry)**2)
+    edge = (cx+dx*scale, cy+dy*scale)
+    length = math.hypot(dx, dy)
+    ux, uy = dx/length, dy/length
+    base = (edge[0]-ux*8, edge[1]-uy*8)
+    tip = (edge[0]+(target[0]-edge[0])*0.68,
+           edge[1]+(target[1]-edge[1])*0.68)
+    px, py = -uy*14, ux*14
+    p0, p2 = (base[0]+px, base[1]+py), (base[0]-px, base[1]-py)
+    c0 = (edge[0]+(tip[0]-edge[0])*0.35+px*0.35,
+          edge[1]+(tip[1]-edge[1])*0.35+py*0.35)
+    c1 = (edge[0]+(tip[0]-edge[0])*0.35-px*0.35,
+          edge[1]+(tip[1]-edge[1])*0.35-py*0.35)
+    tail = [quad_point(p0, c0, tip, i/12) for i in range(13)]
+    tail += [quad_point(tip, c1, p2, i/12) for i in range(1, 13)]
+    d.polygon(tail, fill=PAPER)
+    d.line(tail+[tail[0]], fill=INK, width=3, joint='curve')
+    d.ellipse(box, fill=PAPER, outline=INK, width=3)
+
+    y = cy-text_h/2
+    for line, width, b in zip(lines, widths, boxes):
+        d.text((cx-width/2-b[0], y-b[1]), line, font=f, fill=INK)
+        y += line_h
+    return box
+
+
+def caption(im, title, lines, xy, size=27):
+    """画外转述caption：明确来源、无尾巴，与普通对白椭圆区分。"""
+    d = ImageDraw.Draw(im)
+    f, label_f = ft(size), ft(20)
+    widths = [d.textbbox((0, 0), line, font=f)[2] for line in lines]
+    w = max(widths + [d.textbbox((0, 0), title, font=label_f)[2]]) + 52
+    h = 48 + len(lines)*(size+10) + 20
+    x, y = xy
+    d.rounded_rectangle((x, y, x+w, y+h), radius=18, fill=INK, outline=INK, width=3)
+    d.text((x+24, y+14), title, font=label_f, fill=YELLOW)
+    ty = y+51
+    for line in lines:
+        d.text((x+26, ty), line, font=f, fill=PAPER)
+        ty += size+10
+    return (x, y, x+w, y+h)
+
+
+def num(im, n=None):
+    d = ImageDraw.Draw(im)
+    s = 'COVER' if n is None else f'{n:02d} / 07'
+    d.text((1250, 1855), s, font=ft(18), fill=MUTED)
+
+
+def perspective_schedule(im, title_s, rows, quad, source_size, title_size=58, row_size=46,
+                         row_step=96, title_y=25, start_y=125, margin=42):
+    """整张文字层按纸面四角透视映射；所有文字先留纸内安全边距，再三倍渲染降采样。"""
+    sw, sh = source_size
+    ss = 3
+    layer = Image.new('RGBA', (sw*ss, sh*ss), (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    d.text((margin*ss, title_y*ss), title_s, font=ft(title_size*ss), fill=RED)
+    y = start_y*ss
+    for row in rows:
+        d.text((margin*ss, y), row, font=ft(row_size*ss), fill=INK)
+        y += row_step*ss
+    assert y <= (sh-20)*ss, 'Schedule exceeds source paper safety area'
+    src = ((0, 0), (sw*ss, 0), (sw*ss, sh*ss), (0, sh*ss))
+    a, b = [], []
+    for (x, y), (u, v) in zip(quad, src):
+        x *= ss
+        y *= ss
+        a.extend(([x, y, 1, 0, 0, 0, -u*x, -u*y],
+                  [0, 0, 0, x, y, 1, -v*x, -v*y]))
+        b.extend((u, v))
+    coeffs = np.linalg.solve(np.asarray(a, dtype=float), np.asarray(b, dtype=float))
+    warped = layer.transform((W*ss, H*ss), Image.Transform.PERSPECTIVE,
+                             coeffs, Image.Resampling.BICUBIC)
+    warped = warped.resize((W, H), Image.Resampling.LANCZOS)
+    im.paste(warped, (0, 0), warped)
+
+
+pages = []
+
+im = scene('cover.png')
+d = ImageDraw.Draw(im)
+cover_title(d, '休假回来的姐姐……')
+speech(im, ['星野，这次长假，', '先陪我。'], (270, 210), (620, 360), 30)
+d = ImageDraw.Draw(im)
+d.text((60, 1780), '《星辰落进灯火里》 第一话', font=ft(25), fill=RED)
+num(im)
+im.save(OUT/'page-00-cover.png')
+pages.append(im)
+
+im = scene('shot-01.png')
+speech(im, ['项目搞定！', '从今天起，我是家里蹲。'], (330, 180), (735, 400), 30)
+num(im, 1)
+im.save(OUT/'page-01.png')
+pages.append(im)
+
+im = scene('shot-02.png')
+speech(im, ['这次我会待很久，', '先把以前少陪你的时间', '补回来。'],
+       (265, 275), (535, 720), 28)
+num(im, 2)
+im.save(OUT/'page-02.png')
+pages.append(im)
+
+im = scene('shot-03.png')
+speech(im, ['我刚回来，', '今天先归我。'], (230, 180), (336, 480), 30)
+speech(im, ['二哥，', '今天先陪我！'], (1120, 400), (1008, 704), 30)
+num(im, 3)
+im.save(OUT/'page-03.png')
+pages.append(im)
+
+im = scene('shot-04.png')
+speech(im, ['小满，', '连你也来抢呀？'], (1130, 340), (1176, 624), 28)
+speech(im, ['小叔先陪我', '搭城堡！'], (200, 680), (368, 912), 28)
+num(im, 4)
+im.save(OUT/'page-04.png')
+pages.append(im)
+
+im = scene('shot-05.png')
+speech(im, ['别抢，', '我把时间都排好了。'], (1200, 270), (1060, 690), 28)
+perspective_schedule(
+    im, '星野的日程表',
+    ['1. 陪姐姐散步', '2. 陪妹妹挑书', '3. 陪小满搭城堡，', '   再讲三遍故事'],
+    ((601, 1179), (951, 1056), (1104, 1128), (781, 1360)),
+    (650, 500), title_size=32, row_size=34, row_step=68,
+    title_y=160, start_y=200, margin=18)
+num(im, 5)
+im.save(OUT/'page-05.png')
+pages.append(im)
+
+im = scene('shot-06.png')
+speech(im, ['安排得很好，', '但是得先把他的休息排上。'], (1090, 120), (888, 528), 28)
+speech(im, ['我也有自己的', '行程啊？'], (210, 250), (584, 760), 30)
+perspective_schedule(
+    im, '星野的日程表',
+    ['1. 陪姐姐散步', '2. 陪妹妹挑书', '3. 陪小满搭城堡，', '   再讲三遍故事', '4. 二弟睡觉'],
+    ((937, 1142), (1297, 1206), (932, 1579), (562, 1419)),
+    (600, 760), title_size=48, row_size=40, row_step=60,
+    title_y=380, start_y=440, margin=32)
+num(im, 6)
+im.save(OUT/'page-06.png')
+pages.append(im)
+
+im = scene('shot-07.png')
+caption(im, '妈妈转述', ['你哥哥跟你说，项目结束就好，', '早点休息，别熬夜。'], (55, 55), 27)
+speech(im, ['小叔休息好了，', '就陪我讲故事！'], (200, 835), (390, 1070), 27)
+d = ImageDraw.Draw(im)
+d.rounded_rectangle((50, 1795, 585, 1870), radius=18, fill=INK)
+d.text((75, 1815), '二弟被预约的第一天，正式开始。', font=ft(22), fill=YELLOW)
+num(im, 7)
+im.save(OUT/'page-07.png')
+pages.append(im)
+
+pages[0].save(ROOT/'deliverables/第一话_V4_精细化重制.pdf', save_all=True,
+              append_images=pages[1:], resolution=150)
+vertical_pages = []
 for source_path in sorted(OUT.glob('page-*.png')):
- # 必须读取刚刚保存的定版PNG，避免内存画面与正式交付源不一致。
- source=Image.open(source_path).convert('RGB')
- assert source.size==(W,H),f'Unexpected approved page size: {source_path}: {source.size}'
- vertical=Image.new('RGB',VERTICAL_SIZE,PAPER)
- vertical.paste(source,(0,(VERTICAL_SIZE[1]-H)//2))
- vertical.save(VERTICAL_OUT/source_path.name)
- vertical_pages.append(vertical)
-vertical_pages[0].save(ROOT/'deliverables/第一话_竖屏全页漫画.pdf',save_all=True,append_images=vertical_pages[1:],resolution=150)
-print('Built unified-dialogue V4:',len(pages),'pages')
-print('Built reference-ratio vertical V4:',len(vertical_pages),'pages',VERTICAL_SIZE)
+    source = Image.open(source_path).convert('RGB')
+    assert source.size == (W, H), f'Unexpected approved page size: {source_path}: {source.size}'
+    vertical = Image.new('RGB', VERTICAL_SIZE, PAPER)
+    vertical.paste(source, (0, (VERTICAL_SIZE[1]-H)//2))
+    vertical.save(VERTICAL_OUT/source_path.name)
+    vertical_pages.append(vertical)
+vertical_pages[0].save(ROOT/'deliverables/第一话_竖屏全页漫画.pdf', save_all=True,
+                       append_images=vertical_pages[1:], resolution=150)
+print('Built chapter 1 with measured elliptical speech balloons:', len(pages), 'pages')
+print('Built reference-ratio vertical edition:', len(vertical_pages), 'pages', VERTICAL_SIZE)
