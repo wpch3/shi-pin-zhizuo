@@ -39,8 +39,8 @@ def num(im,n=None):
  d=ImageDraw.Draw(im);s='COVER' if n is None else f'{n:02d} / 07';d.text((1250,1855),s,font=ft(18),fill=MUTED)
 def clean(im,box):ImageDraw.Draw(im).rectangle(box,fill=PAPER)
 def perspective_schedule(im,title_s,rows,quad,font_scale=1.0):
- """统一最终字号；2倍画布透视变换后降采样，避免小字发虚。"""
- sw,sh=780,520;ss=2
+ """统一最终字号；3倍画布透视变换后降采样，避免小字发虚。"""
+ sw,sh=780,520;ss=3
  layer=Image.new('RGBA',(sw*ss,sh*ss),(0,0,0,0));d=ImageDraw.Draw(layer)
  d.text((35*ss,18*ss),title_s,font=ft(round(54*ss*font_scale)),fill=RED)
  y=115*ss
@@ -91,7 +91,7 @@ im=scene('shot-06.png')
 bubble(im,'沈静宜','安排得很好，先把他的休息排上。',(55,105,610,185),28,tail='right')
 bubble(im,'江星野','我也有自己的行程啊？',(55,345,465,160),27)
 # 原纸面保持完整，文字直接透视映射到纸内，不叠加补色多边形。
-perspective_schedule(im,'星野的日程表',['1. 陪姐姐散步','2. 陪妹妹挑书','3. 小满：城堡、故事×3','4. 二弟睡觉'],((637,1401),(744,1314),(1013,1401),(885,1514)),font_scale=1.15)
+perspective_schedule(im,'星野的日程表',['1. 陪姐姐散步','2. 陪妹妹挑书','3. 小满：城堡、故事×3','4. 二弟睡觉'],((610,1400),(735,1310),(935,1390),(820,1485)),font_scale=1.0)
 num(im,6);im.save(OUT/'page-06.png');pages.append(im)
 
 im=scene('shot-07.png')
