@@ -115,7 +115,7 @@ pages = []
 im = scene('cover.png')
 d = ImageDraw.Draw(im)
 cover_title(d, '休假回来的姐姐……')
-speech(im, ['星野，这次长假，', '先陪我。'], (270, 210), (620, 360), 30)
+speech(im, ['星野，这次长假，', '先陪我，好不好？'], (270, 210), (620, 360), 30)
 d = ImageDraw.Draw(im)
 d.text((60, 1780), '《二弟的休息日被全家预约了》 第一话', font=ft(25), fill=RED, stroke_width=2, stroke_fill=PAPER)
 num(im)
@@ -129,7 +129,7 @@ im.save(OUT/'page-01.png')
 pages.append(im)
 
 im = scene('shot-02.png')
-speech(im, ['这次我会待很久，', '先把以前少陪你的时间', '补回来。'],
+speech(im, ['这次我会多住一阵子，', '以前没时间陪你的，', '慢慢补回来。'],
        (265, 275), (535, 720), 28)
 num(im, 2)
 im.save(OUT/'page-02.png')
@@ -150,7 +150,7 @@ im.save(OUT/'page-04.png')
 pages.append(im)
 
 im = scene('shot-05.png')
-speech(im, ['别抢，', '我把时间都排好了。'], (1200, 270), (1060, 690), 28)
+speech(im, ['别抢啦，', '我把时间都排好了。'], (1200, 270), (1060, 690), 28)
 perspective_schedule(
     im, '星野的日程表',
     ['1. 陪姐姐散步', '2. 陪妹妹挑书', '3. 陪小满搭城堡，', '   再讲三遍故事'],
@@ -162,7 +162,7 @@ im.save(OUT/'page-05.png')
 pages.append(im)
 
 im = scene('shot-06.png')
-speech(im, ['安排得很好，', '但是得先把他的休息排上。'], (1090, 120), (888, 528), 28)
+speech(im, ['安排得挺好，', '不过得先把他休息的时间排上。'], (1090, 120), (888, 528), 28)
 speech(im, ['我也有自己的', '行程啊？'], (210, 250), (584, 760), 30)
 perspective_schedule(
     im, '星野的日程表',
@@ -176,7 +176,7 @@ pages.append(im)
 
 im = scene('shot-07.png')
 caption(im, '妈妈转述', ['你哥哥跟你说，项目结束就好，', '早点休息，别熬夜。'], (55, 55), 27)
-speech(im, ['小叔休息好了，', '就陪我讲故事！'], (200, 835), (390, 1070), 27)
+speech(im, ['小叔，等你休息好了，', '再陪我讲故事嘛。'], (200, 835), (390, 1070), 27)
 d = ImageDraw.Draw(im)
 d.rounded_rectangle((50, 1795, 585, 1870), radius=18, fill=INK)
 d.text((75, 1815), '二弟被预约的第一天，正式开始。', font=ft(22), fill=YELLOW)
