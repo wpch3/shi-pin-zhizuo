@@ -45,9 +45,10 @@ def speech(im, lines, center, target, size=29):
     box = (round(cx-bw/2), round(cy-bh/2), round(cx+bw/2), round(cy+bh/2))
 
     tail, _ = oval_tail(center, (bw, bh), target, tail_length=30, tail_width=28, bend=2)
-    d.polygon(tail, fill=PAPER)
-    d.line(tail+[tail[0]], fill=INK, width=3, joint='curve')
+    # 先画框体，再以尾巴填充遮住根部椭圆弧；只描两侧，不描封闭底边。
     d.ellipse(box, fill=PAPER, outline=INK, width=3)
+    d.polygon(tail, fill=PAPER)
+    d.line(tail, fill=INK, width=3, joint='curve')
 
     y = cy-text_h/2
     for line, width, b in zip(lines, widths, boxes):
