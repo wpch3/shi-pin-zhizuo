@@ -69,9 +69,27 @@ def num(im, n=None):
     d.text((1250, 1855), s, font=ft(18), fill=MUTED)
 
 
+def unify_schedule_paper(im, quad, delta=(-5, -11, -25)):
+    """仅调整纸内近白低色度像素，保留纸张明暗、手、笔与桌面颜色。"""
+    mask_im = Image.new('L', im.size)
+    ImageDraw.Draw(mask_im).polygon(quad, fill=255)
+    pixels = np.asarray(im).copy()
+    mask = np.asarray(mask_im) > 0
+    chroma = pixels.max(axis=2).astype(int) - pixels.min(axis=2).astype(int)
+    paper = mask & (pixels.min(axis=2) > 180) & (chroma < 35)
+    adjusted = np.clip(pixels.astype(int) + np.asarray(delta), 0, 255).astype(np.uint8)
+    pixels[paper] = adjusted[paper]
+    im.paste(Image.fromarray(pixels, 'RGB'), (0, 0))
+
+
 def perspective_schedule(im, title_s, rows, quad, source_size, title_size=58, row_size=46,
                          row_step=96, title_y=25, start_y=125, margin=42):
     """整张文字层按纸面四角透视映射；所有文字先留纸内安全边距，再三倍渲染降采样。"""
+    # 这两页纸张均为菱形视角：阅读起点必须是上尖角，而非左尖角。
+    assert quad[0][1] == min(p[1] for p in quad), '纸张阅读起点必须是上尖角'
+    assert quad[1][0] == max(p[0] for p in quad), '纸张第二角必须是右尖角'
+    assert quad[2][1] == max(p[1] for p in quad), '纸张第三角必须是下尖角'
+    assert quad[3][0] == min(p[0] for p in quad), '纸张第四角必须是左尖角'
     sw, sh = source_size
     ss = 3
     layer = Image.new('RGBA', (sw*ss, sh*ss), (0, 0, 0, 0))
@@ -138,12 +156,15 @@ pages.append(im)
 
 im = scene('shot-05.png')
 speech(im, ['别抢啦，', '我把时间都排好了。'], (1220, 235), (760, 330), 28)
+# 四角必须按阅读方向排列：纸上→纸右→纸下→纸左；纸色与第6页统一。
+schedule_05_quad = ((951, 1056), (1104, 1128), (781, 1360), (601, 1179))
+unify_schedule_paper(im, schedule_05_quad)
 perspective_schedule(
     im, '星野的日程表',
     ['1. 陪姐姐散步', '2. 陪妹妹挑书', '3. 陪小满搭城堡，', '   再讲三遍故事'],
-    ((601, 1179), (951, 1056), (1104, 1128), (781, 1360)),
-    (650, 500), title_size=32, row_size=34, row_step=68,
-    title_y=160, start_y=200, margin=18)
+    schedule_05_quad,
+    (650, 500), title_size=42, row_size=36, row_step=68,
+    title_y=60, start_y=130, margin=230)
 num(im, 5)
 im.save(OUT/'page-05.png')
 pages.append(im)
