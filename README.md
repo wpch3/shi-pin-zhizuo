@@ -12,6 +12,10 @@
 - `deliverables/full-v4-vertical/chapter-01/`：8张竖屏视频PNG，1440×2146；定版原画逐像素保留，只在上下补暖纸色。
 - `art/chapter-01-v4/`：本次重新绘制的封面与7张剧情原图，未复用V3场景或人设立绘。
 - `scripts/build_chapter_v4.py`：按每页原生构图和留白定制排版的构建脚本。
+- `deliverables/第二话_二姐的独占时间.pdf`：第二话独立封面＋7页正片，共8页。
+- `deliverables/第二话_竖屏全页漫画.pdf`：第二话1440×2146竖屏视频版。
+- `deliverables/full-v4/chapter-02/`、`deliverables/full-v4-vertical/chapter-02/`：第二话阅读版与竖屏版独立PNG。
+- `docs/第二话_二姐的独占时间.md`、`docs/V4第二话精细化制作记录.md`：第二话定稿剧本、逐页制作与审查记录。
 - `deliverables/完整人设与合照_V3.pdf`：7张完整人设卡＋七人合照，共8页。
 - `deliverables/完整人设与合照.pdf`：同一正式人设与合照的通用路径。
 - `deliverables/full-v3/characters/`：7张人设卡及1张合照PNG；每张人设卡均已合并该角色的单独立绘、姓名身份、人物简介与完整设定。
@@ -42,6 +46,7 @@
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt pymupdf
 .venv/bin/python scripts/build_chapter_v4.py
+.venv/bin/python scripts/build_chapter02_v4.py
 # 如需重建七人正式人设卡，再运行：
 .venv/bin/python scripts/build_full_v3.py
 ```
