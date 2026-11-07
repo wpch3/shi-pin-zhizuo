@@ -40,7 +40,7 @@ def num(im,n=None):
 def clean(im,box):ImageDraw.Draw(im).rectangle(box,fill=PAPER)
 def perspective_schedule(im,title_s,rows,quad,font_scale=1.0):
  """统一最终字号；2倍画布透视变换后降采样，避免小字发虚。"""
- sw,sh=780,420;ss=2
+ sw,sh=780,520;ss=2
  layer=Image.new('RGBA',(sw*ss,sh*ss),(0,0,0,0));d=ImageDraw.Draw(layer)
  d.text((35*ss,18*ss),title_s,font=ft(round(54*ss*font_scale)),fill=RED)
  y=115*ss
