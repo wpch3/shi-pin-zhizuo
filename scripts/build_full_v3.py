@@ -102,7 +102,7 @@ for i,c in enumerate(DATA['characters'],1):
  im.save(COUT/f"{i:02d}-{c['id']}.png");cards.append(im)
 
 im=Image.new('RGB',(W,H),PAPER);d=ImageDraw.Draw(im)
-d.text((50,35),'星辰落进灯火里',font=ft(60),fill=INK);d.text((55,125),'全员合照｜江怀川 · 沈静宜 · 江昭远 · 江望舒 · 江星野 · 江辰希 · 小满',font=ft(22),fill=RED)
+d.text((50,35),DATA['work_title'],font=ft(60),fill=INK);d.text((55,125),'全员合照｜江怀川 · 沈静宜 · 江昭远 · 江望舒 · 江星野 · 江辰希 · 小满',font=ft(22),fill=RED)
 group=Image.open(ROOT/'art/family-v3/group.png').convert('RGB');paste_fit(im,group,(45,190,1350,1650))
 im.save(COUT/'08-family.png');cards.append(im)
 for name in ['完整人设与合照_V3.pdf','完整人设与合照.pdf']:
