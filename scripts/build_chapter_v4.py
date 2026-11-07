@@ -1,7 +1,7 @@
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
-import math
 import numpy as np
+from speech_bubble_geometry import oval_tail
 
 ROOT = Path(__file__).resolve().parents[1]
 W, H = 1440, 1920
@@ -31,13 +31,8 @@ def cover_title(d, s, size=66):
     d.text((38, 28), s, font=ft(size), fill=YELLOW, stroke_width=4, stroke_fill=INK)
 
 
-def quad_point(p0, p1, p2, t):
-    return ((1-t)**2*p0[0] + 2*(1-t)*t*p1[0] + t*t*p2[0],
-            (1-t)**2*p0[1] + 2*(1-t)*t*p1[1] + t*t*p2[1])
-
-
 def speech(im, lines, center, target, size=30):
-    """按真实文字块生成椭圆；无姓名标签，尾巴从椭圆边缘朝嘴部延伸约一半距离。"""
+    """测量文字生成椭圆；采用MIT开源Speechbubble的椭圆曲线尾巴。"""
     d = ImageDraw.Draw(im)
     f = ft(size)
     gap = round(size * 0.34)
@@ -51,28 +46,7 @@ def speech(im, lines, center, target, size=30):
     cx, cy = center
     box = (round(cx-bw/2), round(cy-bh/2), round(cx+bw/2), round(cy+bh/2))
 
-    # 椭圆数学边界上的尾巴根部；尖端只走剩余距离约55%，不会跨越半页找人。
-    dx, dy = target[0]-cx, target[1]-cy
-    rx, ry = bw/2, bh/2
-    scale = 1 / math.sqrt((dx/rx)**2 + (dy/ry)**2)
-    edge = (cx+dx*scale, cy+dy*scale)
-    length = math.hypot(dx, dy)
-    ux, uy = dx/length, dy/length
-    base = (edge[0]-ux*8, edge[1]-uy*8)
-    remaining = math.hypot(target[0]-edge[0], target[1]-edge[1])
-    tail_len = min(60, max(26, remaining*0.34))
-    tip = (edge[0]+ux*tail_len, edge[1]+uy*tail_len)
-    px, py = -uy*13, ux*13
-    p0, p2 = (base[0]+px, base[1]+py), (base[0]-px, base[1]-py)
-    near = (tip[0]-ux*6, tip[1]-uy*6)
-    q0, q2 = (near[0]-uy*5, near[1]+ux*5), (near[0]+uy*5, near[1]-ux*5)
-    c0 = (edge[0]+ux*tail_len*0.38+px*0.42,
-          edge[1]+uy*tail_len*0.38+py*0.42)
-    c1 = (edge[0]+ux*tail_len*0.38-px*0.42,
-          edge[1]+uy*tail_len*0.38-py*0.42)
-    tail = [quad_point(p0, c0, q0, i/12) for i in range(13)]
-    tail += [quad_point(q0, (tip[0]+ux*6, tip[1]+uy*6), q2, i/8) for i in range(1, 9)]
-    tail += [quad_point(q2, c1, p2, i/12) for i in range(1, 13)]
+    tail, _ = oval_tail(center, (bw, bh), target, tail_length=30, tail_width=28, bend=2)
     d.polygon(tail, fill=PAPER)
     d.line(tail+[tail[0]], fill=INK, width=3, joint='curve')
     d.ellipse(box, fill=PAPER, outline=INK, width=3)
