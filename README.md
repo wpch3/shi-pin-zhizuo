@@ -12,6 +12,7 @@
 - `deliverables/full-v3/characters/`：7张人设卡及1张合照PNG。
 - `data/characters.json`：七人正式姓名与补全人设的排版来源。
 - `docs/V3角色与画风锁定.md`：唯一参考、造型和统一画风规范。
+- `docs/V3逐页视觉与剧情审查.md`：每页交付前必须执行的视觉、画风及剧情审查铁律。
 - `docs/V2扩展角色预案.md`：后续备选角色，未进入第一话。
 - `scripts/build_full_v3.py`：V3全量排版与PDF构建脚本。
 

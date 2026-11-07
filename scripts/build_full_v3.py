@@ -60,7 +60,7 @@ d.text((55,1790),'《星辰落进灯火里》 第一话',font=ft(28),fill=RED)
 im.save(OOUT/'page-00-cover.png');pages.append(im)
 
 specs=[
- ('项目刚结束，他想躺平……',('江星野','项目搞定！从今天起，我是家里蹲。',(45,155,550,195),31)),
+ ('项目刚结束，他想躺平……',('江星野','项目搞定！从今天起，我是家里蹲。',(40,155,450,195),30)),
  ('姐姐休假回来，第一件事——',('江望舒','这次我会待很久，先把以前少陪你的时间补回来。',(40,145,450,275),28)),
  ('刚回家，就开始抢人……',None),
  ('三个人，都想先约他……',('小满','小叔先陪我搭城堡！',(45,150,590,160),34)),
@@ -81,7 +81,7 @@ for i,(heading,dialogue) in enumerate(specs,1):
   yy=1470
   for j,row in enumerate(rows):d.text((165,yy),row,font=ft(29 if j==2 else 31),fill=RED if j==3 else INK);yy+=72
  if i==7:
-  bubble(im,'江昭远','老二，项目结束就好，别熬夜。',(45,140,920,165),size=32,dark=True)
+  bubble(im,'沈静宜','你大哥刚发消息：项目结束就好，别熬夜。',(500,140,880,175),size=30,dark=True)
   bubble(im,'小满','小叔休息好，就陪我讲故事！',(360,1580,720,150),size=30)
   d=ImageDraw.Draw(im);d.rounded_rectangle((120,1770,1320,1865),radius=22,fill=INK)
   d.text((170,1793),'二弟被预约的第一天，正式开始。',font=ft(36),fill=YELLOW)
