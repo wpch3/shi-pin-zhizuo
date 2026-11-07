@@ -88,7 +88,7 @@ perspective_schedule(im,'星野的日程表',['1. 陪姐姐散步','2. 陪妹妹
 num(im,5);im.save(OUT/'page-05.png');pages.append(im)
 
 im=scene('shot-06.png')
-bubble(im,'沈静宜','安排得很好，先把他的休息排上。',(55,105,610,185),28,tail='right')
+bubble(im,'沈静宜','安排得很好，但是得先把他的休息排上。',(55,105,650,185),28,tail='right')
 bubble(im,'江星野','我也有自己的行程啊？',(55,345,465,160),27)
 # 原纸面保持完整，文字直接透视映射到纸内，不叠加补色多边形。
 perspective_schedule(im,'星野的日程表',['1. 陪姐姐散步','2. 陪妹妹挑书','3. 陪小满搭城堡，再讲三遍故事','4. 二弟睡觉'],((610,1400),(735,1310),(935,1390),(820,1485)),font_scale=1.0)
@@ -96,9 +96,9 @@ num(im,6);im.save(OUT/'page-06.png');pages.append(im)
 
 im=scene('shot-07.png')
 # 妈妈不在画面中：使用无尾巴的转述消息框，避免误指向沙发上的二弟。
-bubble(im,'妈妈','你哥哥跟你说，项目结束就好，早点休息，别熬夜。',(55,55,650,220),27,dark=True,tail=None)
+bubble(im,'妈妈','你哥哥跟你说，项目结束就好，早点休息，别熬夜。',(55,55,700,220),27,dark=True,tail=None)
 # 小满气泡在下方居中，用向上的尾巴明确指向小满，不压任何人物头部。
-bubble(im,'小满','小叔休息好，就陪我讲故事！',(380,1600,850,150),27,tail='up-left')
+bubble(im,'小满','小叔休息好了，就陪我讲故事！',(380,1600,850,150),27,tail='up-left')
 d=ImageDraw.Draw(im);d.rounded_rectangle((50,1795,520,1870),radius=18,fill=INK)
 d.text((75,1815),'二弟被预约的第一天，正式开始。',font=ft(22),fill=YELLOW)
 num(im,7);im.save(OUT/'page-07.png');pages.append(im)
