@@ -6,6 +6,10 @@ ROOT=Path(__file__).resolve().parents[1]
 W,H=1440,1920
 SRC=ROOT/'art/chapter-01-v4'
 OUT=ROOT/'deliverables/full-v4/chapter-01';OUT.mkdir(parents=True,exist_ok=True)
+VERTICAL_OUT=ROOT/'deliverables/full-v4-vertical/chapter-01';VERTICAL_OUT.mkdir(parents=True,exist_ok=True)
+# 用户提供的竖屏视频参考原图为1696×2528；等比画布为1440×2146（四舍五入）。
+# 定版的1440×1920页面不做缩放或重采样，只在上下各补113像素暖纸色。
+VERTICAL_SIZE=(1440,2146)
 FONT=ROOT/'assets/fonts/NotoSansCJKsc-Bold.otf'
 PAPER='#F8F4EB';INK='#292B2C';RED='#92504C';YELLOW='#E9BD4F';MUTED='#746E67'
 def ft(n):return ImageFont.truetype(str(FONT),n)
@@ -103,6 +107,16 @@ d=ImageDraw.Draw(im);d.rounded_rectangle((50,1795,520,1870),radius=18,fill=INK)
 d.text((75,1815),'二弟被预约的第一天，正式开始。',font=ft(22),fill=YELLOW)
 num(im,7);im.save(OUT/'page-07.png');pages.append(im)
 
-for name in ['第一话_V4_精细化重制.pdf','第一话_竖屏全页漫画.pdf']:
- pages[0].save(ROOT/'deliverables'/name,save_all=True,append_images=pages[1:],resolution=150)
+pages[0].save(ROOT/'deliverables/第一话_V4_精细化重制.pdf',save_all=True,append_images=pages[1:],resolution=150)
+vertical_pages=[]
+for source_path in sorted(OUT.glob('page-*.png')):
+ # 必须读取刚刚保存的定版PNG，避免内存画面与正式交付源不一致。
+ source=Image.open(source_path).convert('RGB')
+ assert source.size==(W,H),f'Unexpected approved page size: {source_path}: {source.size}'
+ vertical=Image.new('RGB',VERTICAL_SIZE,PAPER)
+ vertical.paste(source,(0,(VERTICAL_SIZE[1]-H)//2))
+ vertical.save(VERTICAL_OUT/source_path.name)
+ vertical_pages.append(vertical)
+vertical_pages[0].save(ROOT/'deliverables/第一话_竖屏全页漫画.pdf',save_all=True,append_images=vertical_pages[1:],resolution=150)
 print('Built unified-dialogue V4:',len(pages),'pages')
+print('Built reference-ratio vertical V4:',len(vertical_pages),'pages',VERTICAL_SIZE)
