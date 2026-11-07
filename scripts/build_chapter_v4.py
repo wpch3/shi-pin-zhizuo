@@ -24,14 +24,23 @@ def bubble(im,speaker,s,box,size=30,dark=False,tail='left'):
  """全话统一暖白圆角对白；深色只用于手机/转述消息。"""
  d=ImageDraw.Draw(im);x,y,w,h=box;fill=INK if dark else PAPER;body=PAPER if dark else INK
  d.rounded_rectangle((x,y,x+w,y+h),radius=28,fill=fill,outline=INK,width=3)
- if tail=='left':d.polygon(((x+60,y+h-3),(x+105,y+h-3),(x+76,y+h+27)),fill=fill)
- elif tail=='right':d.polygon(((x+w-105,y+h-3),(x+w-60,y+h-3),(x+w-76,y+h+27)),fill=fill)
+ if tail=='left':d.polygon(((x+60,y+h-3),(x+105,y+h-3),(x+76,y+h+27)),fill=fill,outline=INK,width=3)
+ elif tail=='right':d.polygon(((x+w-105,y+h-3),(x+w-60,y+h-3),(x+w-76,y+h+27)),fill=fill,outline=INK,width=3)
  d.text((x+24,y+15),speaker,font=ft(21),fill=YELLOW if dark else RED)
  text(d,s,(x+24,y+55),w-48,size=size,fill=body,gap=9)
 def scene(name):return Image.open(SRC/name).convert('RGB').resize((W,H),Image.Resampling.LANCZOS)
 def num(im,n=None):
  d=ImageDraw.Draw(im);s='COVER' if n is None else f'{n:02d} / 07';d.text((1250,1855),s,font=ft(18),fill=MUTED)
 def clean(im,box):ImageDraw.Draw(im).rectangle(box,fill=PAPER)
+def angled_schedule(im,title_s,rows,pos,angle,width=420,title_size=25,body_size=22):
+ """先排成文字块，再按纸面角度整体旋转，避免横字贴斜纸。"""
+ layer=Image.new('RGBA',(width,220),(0,0,0,0));d=ImageDraw.Draw(layer)
+ d.text((12,5),title_s,font=ft(title_size),fill=RED)
+ y=52
+ for row in rows:
+  d.text((16,y),row,font=ft(body_size),fill=INK);y+=body_size+15
+ layer=layer.rotate(angle,resample=Image.Resampling.BICUBIC,expand=True)
+ im.paste(layer,pos,layer)
 
 pages=[]
 im=scene('cover.png');d=ImageDraw.Draw(im);cover_title(d,'休假回来的姐姐……')
@@ -59,17 +68,16 @@ num(im,4);im.save(OUT/'page-04.png');pages.append(im)
 
 im=scene('shot-05.png')
 bubble(im,'江星野','别抢，我把时间都排好了。',(55,115,530,180),29)
-d=ImageDraw.Draw(im);d.text((950,1530),'星野的安排',font=ft(28),fill=RED)
-text(d,'陪姐姐散步\n陪妹妹挑书\n陪小满搭城堡、讲故事',(950,1585),360,25,gap=13)
+angled_schedule(im,'星野的安排',['陪姐姐散步','陪妹妹挑书','陪小满搭城堡、讲故事'],(820,1395),28)
 num(im,5);im.save(OUT/'page-05.png');pages.append(im)
 
 im=scene('shot-06.png')
 bubble(im,'沈静宜','安排得很好，先把他的休息排上。',(55,105,610,185),28)
 bubble(im,'江星野','我也有自己的行程啊？',(55,345,465,160),27)
-d=ImageDraw.Draw(im);d.text((90,1615),'江星野的日程表',font=ft(28),fill=RED)
-d.text((95,1675),'1. 陪姐姐散步    2. 陪妹妹挑书',font=ft(25),fill=INK)
-d.text((95,1730),'3. 陪小满搭城堡、讲三遍故事',font=ft(25),fill=INK)
-d.text((95,1785),'4. 二弟睡觉',font=ft(27),fill=RED)
+d=ImageDraw.Draw(im)
+# 清理纸面旧网格，文字限制在桌上纸张四边形内并随纸面旋转。
+d.polygon(((585,1405),(910,1280),(1085,1430),(745,1565)),fill='#FCF9F2')
+angled_schedule(im,'星野的日程表',['1. 陪姐姐散步  2. 陪妹妹挑书','3. 陪小满搭城堡、讲三遍故事','4. 二弟睡觉'],(660,1165),21,width=400,title_size=22,body_size=18)
 num(im,6);im.save(OUT/'page-06.png');pages.append(im)
 
 im=scene('shot-07.png')
