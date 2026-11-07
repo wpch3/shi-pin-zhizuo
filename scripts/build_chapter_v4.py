@@ -50,8 +50,8 @@ text(d,'这次我会待很久，先把以前少陪你的时间补回来。',(100
 num(im,2);im.save(OUT/'page-02.png');pages.append(im)
 
 im=scene('shot-03.png');d=ImageDraw.Draw(im);title(d,'刚回家，就开始抢人……')
-text(d,'二哥，今天先陪我！',(78,178),185,19)
-text(d,'我刚回来，今天先归我。',(1035,255),270,23)
+text(d,'我刚回来，今天先归我。',(78,178),185,19)
+text(d,'二哥，今天先陪我！',(1035,255),270,23)
 num(im,3);im.save(OUT/'page-03.png');pages.append(im)
 
 im=scene('shot-04.png');d=ImageDraw.Draw(im);title(d,'三个人，都想先约他……')
