@@ -56,16 +56,20 @@ def speech(im, lines, center, target, size=29):
     length = math.hypot(dx, dy)
     ux, uy = dx/length, dy/length
     base = (edge[0]-ux*8, edge[1]-uy*8)
-    tip = (edge[0]+(target[0]-edge[0])*0.68,
-           edge[1]+(target[1]-edge[1])*0.68)
-    px, py = -uy*14, ux*14
+    remaining = math.hypot(target[0]-edge[0], target[1]-edge[1])
+    tail_len = min(60, max(26, remaining*0.34))
+    tip = (edge[0]+ux*tail_len, edge[1]+uy*tail_len)
+    px, py = -uy*13, ux*13
     p0, p2 = (base[0]+px, base[1]+py), (base[0]-px, base[1]-py)
-    c0 = (edge[0]+(tip[0]-edge[0])*0.35+px*0.35,
-          edge[1]+(tip[1]-edge[1])*0.35+py*0.35)
-    c1 = (edge[0]+(tip[0]-edge[0])*0.35-px*0.35,
-          edge[1]+(tip[1]-edge[1])*0.35-py*0.35)
-    tail = [quad_point(p0, c0, tip, i/12) for i in range(13)]
-    tail += [quad_point(tip, c1, p2, i/12) for i in range(1, 13)]
+    near = (tip[0]-ux*6, tip[1]-uy*6)
+    q0, q2 = (near[0]-uy*5, near[1]+ux*5), (near[0]+uy*5, near[1]-ux*5)
+    c0 = (edge[0]+ux*tail_len*0.38+px*0.42,
+          edge[1]+uy*tail_len*0.38+py*0.42)
+    c1 = (edge[0]+ux*tail_len*0.38-px*0.42,
+          edge[1]+uy*tail_len*0.38-py*0.42)
+    tail = [quad_point(p0, c0, q0, i/12) for i in range(13)]
+    tail += [quad_point(q0, (tip[0]+ux*6, tip[1]+uy*6), q2, i/8) for i in range(1, 9)]
+    tail += [quad_point(q2, c1, p2, i/12) for i in range(1, 13)]
     d.polygon(tail, fill=PAPER)
     d.line(tail+[tail[0]], fill=INK, width=3, joint='curve')
     d.ellipse(box, fill=PAPER, outline=INK, width=3)
@@ -90,7 +94,7 @@ d = ImageDraw.Draw(im)
 d.text((38, 28), '二姐的独占时间', font=ft(66), fill=YELLOW, stroke_width=4, stroke_fill=INK)
 speech(im, ['今天没人要抢你咯，', '专心陪着姐姐我哦。'], (1000, 190), (995, 466), 29)
 d = ImageDraw.Draw(im)
-d.text((60, 1780), '第二话', font=ft(25), fill=RED)
+d.text((60, 1780), '《二弟的休息日被全家预约了》 第二话', font=ft(25), fill=RED, stroke_width=2, stroke_fill=PAPER)
 num(im)
 im.save(OUT/'page-00-cover.png')
 pages.append(im)
