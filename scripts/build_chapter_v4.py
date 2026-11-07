@@ -23,10 +23,14 @@ def cover_title(d,s,size=66):d.text((38,28),s,font=ft(size),fill=YELLOW,stroke_w
 def bubble(im,speaker,s,box,size=30,dark=False,tail='left'):
  """全话统一暖白圆角对白；深色只用于手机/转述消息。"""
  d=ImageDraw.Draw(im);x,y,w,h=box;fill=INK if dark else PAPER;body=PAPER if dark else INK
+ # 先画尾巴，再画框体遮住三角底边；只描两侧，接口不能多一条横线。
+ points=None
+ if tail=='left':points=((x+60,y+h-3),(x+105,y+h-3),(x+76,y+h+27))
+ elif tail=='right':points=((x+w-105,y+h-3),(x+w-60,y+h-3),(x+w-76,y+h+27))
+ elif tail=='up-left':points=((x+60,y+3),(x+105,y+3),(x+76,y-27))
+ if points:
+  d.polygon(points,fill=fill);d.line((points[0],points[2],points[1]),fill=INK,width=3,joint='curve')
  d.rounded_rectangle((x,y,x+w,y+h),radius=28,fill=fill,outline=INK,width=3)
- if tail=='left':d.polygon(((x+60,y+h-3),(x+105,y+h-3),(x+76,y+h+27)),fill=fill,outline=INK,width=3)
- elif tail=='right':d.polygon(((x+w-105,y+h-3),(x+w-60,y+h-3),(x+w-76,y+h+27)),fill=fill,outline=INK,width=3)
- elif tail=='up-left':d.polygon(((x+60,y+3),(x+105,y+3),(x+76,y-27)),fill=fill,outline=INK,width=3)
  d.text((x+24,y+15),speaker,font=ft(21),fill=YELLOW if dark else RED)
  text(d,s,(x+24,y+55),w-48,size=size,fill=body,gap=9)
 def scene(name):return Image.open(SRC/name).convert('RGB').resize((W,H),Image.Resampling.LANCZOS)
@@ -83,7 +87,7 @@ num(im,6);im.save(OUT/'page-06.png');pages.append(im)
 
 im=scene('shot-07.png')
 # 妈妈不在画面中：使用无尾巴的转述消息框，避免误指向沙发上的二弟。
-bubble(im,'妈妈转述 · 大哥消息','项目结束就好，别熬夜。',(55,55,650,220),28,dark=True,tail=None)
+bubble(im,'妈妈','你哥哥跟你说，项目结束就好，早点休息，别熬夜。',(55,55,650,220),27,dark=True,tail=None)
 # 小满气泡在下方居中，用向上的尾巴明确指向小满，不压任何人物头部。
 bubble(im,'小满','小叔休息好，就陪我讲故事！',(380,1600,850,150),27,tail='up-left')
 d=ImageDraw.Draw(im);d.rounded_rectangle((50,1795,520,1870),radius=18,fill=INK)
