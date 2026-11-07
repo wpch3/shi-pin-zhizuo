@@ -38,22 +38,24 @@ def scene(name):return Image.open(SRC/name).convert('RGB').resize((W,H),Image.Re
 def num(im,n=None):
  d=ImageDraw.Draw(im);s='COVER' if n is None else f'{n:02d} / 07';d.text((1250,1855),s,font=ft(18),fill=MUTED)
 def clean(im,box):ImageDraw.Draw(im).rectangle(box,fill=PAPER)
-def perspective_schedule(im,title_s,rows,quad):
- """把完整文字块透视映射到纸面内四边形，不补色、不旋转贴片。"""
- sw,sh=780,420
- layer=Image.new('RGBA',(sw,sh),(0,0,0,0));d=ImageDraw.Draw(layer)
- d.text((35,18),title_s,font=ft(54),fill=RED)
- y=115
+def perspective_schedule(im,title_s,rows,quad,font_scale=1.0):
+ """统一最终字号；2倍画布透视变换后降采样，避免小字发虚。"""
+ sw,sh=780,420;ss=2
+ layer=Image.new('RGBA',(sw*ss,sh*ss),(0,0,0,0));d=ImageDraw.Draw(layer)
+ d.text((35*ss,18*ss),title_s,font=ft(round(54*ss*font_scale)),fill=RED)
+ y=115*ss
  for row in rows:
   if isinstance(row,tuple):
-   d.text((35,y),row[0],font=ft(44),fill=INK);d.text((430,y),row[1],font=ft(44),fill=INK)
-  else:d.text((40,y),row,font=ft(44),fill=INK)
-  y+=85
- src=((0,0),(sw,0),(sw,sh),(0,sh));a=[];b=[]
+   d.text((35*ss,y),row[0],font=ft(round(44*ss*font_scale)),fill=INK);d.text((430*ss,y),row[1],font=ft(round(44*ss*font_scale)),fill=INK)
+  else:d.text((40*ss,y),row,font=ft(round(44*ss*font_scale)),fill=INK)
+  y+=85*ss
+ src=((0,0),(sw*ss,0),(sw*ss,sh*ss),(0,sh*ss));a=[];b=[]
  for (x,y),(u,v) in zip(quad,src):
+  x*=ss;y*=ss
   a.extend(([x,y,1,0,0,0,-u*x,-u*y],[0,0,0,x,y,1,-v*x,-v*y]));b.extend((u,v))
  coeffs=np.linalg.solve(np.asarray(a,dtype=float),np.asarray(b,dtype=float))
- warped=layer.transform((W,H),Image.Transform.PERSPECTIVE,coeffs,Image.Resampling.BICUBIC)
+ warped=layer.transform((W*ss,H*ss),Image.Transform.PERSPECTIVE,coeffs,Image.Resampling.BICUBIC)
+ warped=warped.resize((W,H),Image.Resampling.LANCZOS)
  im.paste(warped,(0,0),warped)
 
 pages=[]
@@ -89,7 +91,7 @@ im=scene('shot-06.png')
 bubble(im,'沈静宜','安排得很好，先把他的休息排上。',(55,105,610,185),28,tail='right')
 bubble(im,'江星野','我也有自己的行程啊？',(55,345,465,160),27)
 # 原纸面保持完整，文字直接透视映射到纸内，不叠加补色多边形。
-perspective_schedule(im,'星野的日程表',['1. 陪姐姐散步','2. 陪妹妹挑书','3. 陪小满搭城堡、讲三遍故事','4. 二弟睡觉'],((620,1405),(780,1305),(1030,1405),(875,1520)))
+perspective_schedule(im,'星野的日程表',['1. 陪姐姐散步','2. 陪妹妹挑书','3. 陪小满搭城堡、讲三遍故事','4. 二弟睡觉'],((590,1405),(780,1290),(1060,1405),(900,1540)),font_scale=1.15)
 num(im,6);im.save(OUT/'page-06.png');pages.append(im)
 
 im=scene('shot-07.png')
