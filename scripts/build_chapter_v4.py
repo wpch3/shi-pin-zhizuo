@@ -1,5 +1,6 @@
 from pathlib import Path
 from PIL import Image,ImageDraw,ImageFont
+import numpy as np
 
 ROOT=Path(__file__).resolve().parents[1]
 W,H=1440,1920
@@ -37,15 +38,23 @@ def scene(name):return Image.open(SRC/name).convert('RGB').resize((W,H),Image.Re
 def num(im,n=None):
  d=ImageDraw.Draw(im);s='COVER' if n is None else f'{n:02d} / 07';d.text((1250,1855),s,font=ft(18),fill=MUTED)
 def clean(im,box):ImageDraw.Draw(im).rectangle(box,fill=PAPER)
-def angled_schedule(im,title_s,rows,pos,angle,width=420,title_size=25,body_size=22):
- """先排成文字块，再按纸面角度整体旋转，避免横字贴斜纸。"""
- layer=Image.new('RGBA',(width,220),(0,0,0,0));d=ImageDraw.Draw(layer)
- d.text((12,5),title_s,font=ft(title_size),fill=RED)
- y=52
+def perspective_schedule(im,title_s,rows,quad):
+ """把完整文字块透视映射到纸面内四边形，不补色、不旋转贴片。"""
+ sw,sh=780,420
+ layer=Image.new('RGBA',(sw,sh),(0,0,0,0));d=ImageDraw.Draw(layer)
+ d.text((35,18),title_s,font=ft(54),fill=RED)
+ y=115
  for row in rows:
-  d.text((16,y),row,font=ft(body_size),fill=INK);y+=body_size+15
- layer=layer.rotate(angle,resample=Image.Resampling.BICUBIC,expand=True)
- im.paste(layer,pos,layer)
+  if isinstance(row,tuple):
+   d.text((35,y),row[0],font=ft(44),fill=INK);d.text((430,y),row[1],font=ft(44),fill=INK)
+  else:d.text((40,y),row,font=ft(44),fill=INK)
+  y+=85
+ src=((0,0),(sw,0),(sw,sh),(0,sh));a=[];b=[]
+ for (x,y),(u,v) in zip(quad,src):
+  a.extend(([x,y,1,0,0,0,-u*x,-u*y],[0,0,0,x,y,1,-v*x,-v*y]));b.extend((u,v))
+ coeffs=np.linalg.solve(np.asarray(a,dtype=float),np.asarray(b,dtype=float))
+ warped=layer.transform((W,H),Image.Transform.PERSPECTIVE,coeffs,Image.Resampling.BICUBIC)
+ im.paste(warped,(0,0),warped)
 
 pages=[]
 im=scene('cover.png');d=ImageDraw.Draw(im);cover_title(d,'休假回来的姐姐……')
@@ -73,16 +82,14 @@ num(im,4);im.save(OUT/'page-04.png');pages.append(im)
 
 im=scene('shot-05.png')
 bubble(im,'江星野','别抢，我把时间都排好了。',(55,115,530,180),29,tail='right')
-angled_schedule(im,'星野的安排',['陪姐姐散步','陪妹妹挑书','陪小满搭城堡、讲故事'],(820,1395),28)
+perspective_schedule(im,'星野的安排',['陪姐姐散步','陪妹妹挑书','陪小满搭城堡、讲故事'],((790,1580),(1077,1419),(1231,1552),(944,1734)))
 num(im,5);im.save(OUT/'page-05.png');pages.append(im)
 
 im=scene('shot-06.png')
 bubble(im,'沈静宜','安排得很好，先把他的休息排上。',(55,105,610,185),28,tail='right')
 bubble(im,'江星野','我也有自己的行程啊？',(55,345,465,160),27)
-d=ImageDraw.Draw(im)
-# 清理纸面旧网格，文字限制在桌上纸张四边形内并随纸面旋转。
-d.polygon(((585,1405),(910,1280),(1085,1430),(745,1565)),fill='#FCF9F2')
-angled_schedule(im,'星野的日程表',['1. 陪姐姐散步  2. 陪妹妹挑书','3. 陪小满搭城堡、讲三遍故事','4. 二弟睡觉'],(660,1165),21,width=400,title_size=22,body_size=18)
+# 原纸面保持完整，文字直接透视映射到纸内，不叠加补色多边形。
+perspective_schedule(im,'星野的日程表',[('1. 陪姐姐散步','2. 陪妹妹挑书'),('3. 小满搭城堡','讲三遍故事'),('4. 二弟睡觉','')],((591,1408),(768,1309),(966,1423),(760,1528)))
 num(im,6);im.save(OUT/'page-06.png');pages.append(im)
 
 im=scene('shot-07.png')
