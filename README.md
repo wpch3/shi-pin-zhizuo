@@ -1,14 +1,16 @@
-# 《星辰落进灯火里》V3手绘完整重制
+# 《星辰落进灯火里》V4第一话精细化重制
 
-> **制作前必读：`PROJECT_MEMORY.md`。**其中记录长期记忆、禁止偷懒红线和真实完成标准。现有第一话因直接复用人设立绘及“原图加对话框”已退回，不再视为合格定稿；必须按剧情独立创作并逐页精细化审查。
+> **制作前必读：`PROJECT_MEMORY.md`。**V4封面与7页正片均已重新独立绘制，不调用旧正片、不把人设立绘当剧情图，也不以“原图加方框”冒充优化。V3第一话保留作退回版本记录。
 
 当前唯一视觉基准为用户新确认的 `art/reference/family-character-design-v3.jpg`。正式风格统一为暖纸底、低饱和灰蓝与米棕、细腻手绘线、自然五官及轻薄柔和的填色。旧V2高饱和粗描边人物不再混入正式成品。
 
 ## 正式交付
 
-- `deliverables/第一话_V3_手绘完整重制.pdf`：姐姐封面＋7页正片，共8页。
-- `deliverables/第一话_竖屏全页漫画.pdf`：同一正式第一话的通用路径。
-- `deliverables/full-v3/chapter-01/`：8张独立成品PNG，供直接合成视频。
+- `deliverables/第一话_V4_精细化重制.pdf`：独立剧情封面＋7页独立正片，共8页。
+- `deliverables/第一话_竖屏全页漫画.pdf`：V4正式第一话的通用路径。
+- `deliverables/full-v4/chapter-01/`：V4的8张独立成品PNG，供直接合成视频。
+- `art/chapter-01-v4/`：本次重新绘制的封面与7张剧情原图，未复用V3场景或人设立绘。
+- `scripts/build_chapter_v4.py`：按每页原生构图和留白定制排版的构建脚本。
 - `deliverables/完整人设与合照_V3.pdf`：7张完整人设卡＋七人合照，共8页。
 - `deliverables/完整人设与合照.pdf`：同一正式人设与合照的通用路径。
 - `deliverables/full-v3/characters/`：7张人设卡及1张合照PNG；每张人设卡均已合并该角色的单独立绘、姓名身份、人物简介与完整设定。
@@ -18,7 +20,7 @@
 - `docs/V2扩展角色预案.md`：后续备选角色，未进入第一话。
 - `scripts/build_full_v3.py`：V3全量排版与PDF构建脚本。
 
-全部页面为 **3:4、1440×1920**。标题、对白、日程表和结尾文字均已排入PNG/PDF，无口播、旁白或音乐。第一话7张正片均使用新基准重新制作的独立场景，不使用V2立绘拼贴。
+全部页面为 **3:4、1440×1920**。标题、对白、日程表和结尾文字均已排入PNG/PDF，无口播、旁白或音乐。V4每页均有独立剧情动作、表情、视线和场景构图；文字按原生留白及气泡逐页排入，不使用统一方框模板遮盖画面。
 
 ## 大哥独立故事线
 
@@ -31,13 +33,15 @@
 - `art/reference/family-character-design-v3.jpg`：用户指定的五人角色及画风基准。
 - `art/character-v3/`：依据确认基准逐张重新生成的七人单独立绘，不再使用从旧参考图直接裁切的人设图。
 - `art/family-v3/group.png`：七人合照。
-- `art/vertical-v3/`：7张无字正片场景。
+- `art/vertical-v3/`：已退回的V3旧场景，仅作历史对照，不得用于V4。
 
 ## 重新构建
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt pymupdf
+.venv/bin/python scripts/build_chapter_v4.py
+# 如需重建七人正式人设卡，再运行：
 .venv/bin/python scripts/build_full_v3.py
 ```
 

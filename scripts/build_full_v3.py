@@ -87,7 +87,7 @@ for i,(heading,dialogue) in enumerate(specs,1):
   d.text((170,1793),'二弟被预约的第一天，正式开始。',font=ft(36),fill=YELLOW)
  page_num(im,i);im.save(OOUT/f'page-{i:02d}.png');pages.append(im)
 
-for name in ['第一话_V3_手绘完整重制.pdf','第一话_竖屏全页漫画.pdf']:
+for name in ['第一话_V3_手绘完整重制.pdf']:
  pages[0].save(ROOT/'deliverables'/name,save_all=True,append_images=pages[1:],resolution=150)
 
 cards=[]
