@@ -83,6 +83,8 @@ bubble(im,'江辰希','二哥，今天先陪我！',(980,205,370,175),26)
 num(im,3);im.save(OUT/'page-03.png');pages.append(im)
 
 im=scene('shot-04.png')
+# 妹妹张嘴并指向小满，是在对小满加入争抢作出反应；补足动作对应的台词。
+bubble(im,'江辰希','小满，连你也来抢呀？',(825,70,500,165),27,tail='right')
 bubble(im,'小满','小叔先陪我搭城堡！',(50,535,335,175),25,tail='right')
 num(im,4);im.save(OUT/'page-04.png');pages.append(im)
 
