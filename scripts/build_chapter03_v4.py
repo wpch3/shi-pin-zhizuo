@@ -172,8 +172,8 @@ pages = []
 # 封面：主角妹妹全身独立构图，双脚完整在画内；标题压在天空/雨棚实景区。
 im = scene('cover.png')
 d = ImageDraw.Draw(im)
-d.text((40, 45), '二弟的休息日被全家预约了', font=ft(56), fill=YELLOW, stroke_width=4, stroke_fill=INK)
-d.text((40, 135), '第三话', font=ft(32), fill=PAPER, stroke_width=3, stroke_fill=INK)
+d.text((38, 28), '说好今天陪我的呦', font=ft(66), fill=YELLOW, stroke_width=4, stroke_fill=INK)
+d.text((60, 1780), '《二弟的休息日被全家预约了》 第三话', font=ft(25), fill=RED, stroke_width=2, stroke_fill=PAPER)
 num(im)
 save_png(im, OUT / 'page-00-cover.png')
 pages.append(im)
@@ -256,7 +256,7 @@ pages.append(im)
 
 # 第10页：女同学在左先问，妹妹在右答指定句；哥哥不接话。抬手已局部重绘修正。
 im = scene('shot-10.png')
-speech(im, ['这位是……？'], (300, 200), (400, 620), 29)
+speech(im, ['小希，这位是？'], (300, 200), (400, 620), 29)
 speech(im, ['这个是我男朋友。'], (830, 300), (830, 660), 30)
 num(im, 10)
 save_png(im, OUT / 'page-10.png')
