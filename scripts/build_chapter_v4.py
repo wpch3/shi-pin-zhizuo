@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
 import numpy as np
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
-from pdf_export import save_lossless_pdf
+from pdf_export import save_lossless_pdf_from_paths
 
 ROOT = Path(__file__).resolve().parents[1]
 W, H = 1440, 1920
@@ -38,19 +38,33 @@ USER_MANIFEST = json.loads((USER_FINAL / 'manifest.json').read_text(encoding='ut
 def user_final_page(page, size):
     """用户定稿只读适配：完整contain、不裁切、不拉伸、不改字、不重排。
 
-    第五页阅读版与竖屏版沿用中央原画规则；第六页用户原图本身为53:79，
-    竖屏版直接从原图适配，避免二次扩边缩小画面。原图永远只读。
+    2026-11-08用户补充提供第5/6页无重影新图后，正式构建优先使用manifest.replacement；
+    旧original仍只读保留并校验来源。第五页阅读版与竖屏版沿用中央原画规则；
+    第六页用户新图本身为53:79，竖屏版直接从新图适配，避免二次扩边缩小画面。
     """
     spec = next(p for p in USER_MANIFEST['pages'] if p['page'] == page)
-    path = USER_FINAL / spec['original']
+    original_path = USER_FINAL / spec['original']
+    original_digest = hashlib.sha256(original_path.read_bytes()).hexdigest()
+    if original_digest != spec['sha256']:
+        raise RuntimeError(f'用户定稿旧原图哈希不符，禁止覆盖或替换: {original_path}')
+    replacement = spec.get('replacement')
+    if replacement:
+        path = USER_FINAL / replacement['path']
+        expected_digest = replacement['sha256']
+        expected_size = replacement['size']
+    else:
+        path = original_path
+        expected_digest = spec['sha256']
+        expected_size = spec['original_size']
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
-    if digest != spec['sha256']:
-        raise RuntimeError(f'用户定稿原图哈希不符，禁止覆盖或替换: {path}')
+    if digest != expected_digest:
+        raise RuntimeError(f'用户定稿当前图哈希不符，禁止覆盖或替换: {path}')
     source = Image.open(path).convert('RGB')
-    if list(source.size) != spec['original_size']:
-        raise RuntimeError(f'用户定稿原图尺寸不符: {path}: {source.size}')
+    if list(source.size) != expected_size:
+        raise RuntimeError(f'用户定稿当前图尺寸不符: {path}: {source.size}')
     fitted = ImageOps.contain(source, size, Image.Resampling.LANCZOS)
-    fitted = fitted.filter(ImageFilter.UnsharpMask(radius=0.65, percent=38, threshold=3))
+    if not replacement:
+        fitted = fitted.filter(ImageFilter.UnsharpMask(radius=0.65, percent=38, threshold=3))
     result = Image.new('RGB', size, PAPER)
     result.paste(fitted, ((size[0]-fitted.width)//2, (size[1]-fitted.height)//2))
     return result
@@ -198,7 +212,7 @@ num(im, 7)
 im.save(OUT/'page-07.png')
 pages.append(im)
 
-save_lossless_pdf(pages, ROOT/'deliverables/第一话_V4_精细化重制.pdf', resolution=150)
+save_lossless_pdf_from_paths(sorted(OUT.glob('page-*.png')), ROOT/'deliverables/第一话_V4_精细化重制.pdf', resolution=150)
 vertical_pages = []
 for source_path in sorted(OUT.glob('page-*.png')):
     source = Image.open(source_path).convert('RGB')
@@ -210,6 +224,6 @@ for source_path in sorted(OUT.glob('page-*.png')):
         vertical.paste(source, (0, (VERTICAL_SIZE[1]-H)//2))
     vertical.save(VERTICAL_OUT/source_path.name)
     vertical_pages.append(vertical)
-save_lossless_pdf(vertical_pages, ROOT/'deliverables/第一话_竖屏全页漫画.pdf', resolution=150)
+save_lossless_pdf_from_paths(sorted(VERTICAL_OUT.glob('page-*.png')), ROOT/'deliverables/第一话_竖屏全页漫画.pdf', resolution=150)
 print('Built chapter 1 with measured elliptical speech balloons:', len(pages), 'pages')
 print('Built reference-ratio vertical edition:', len(vertical_pages), 'pages', VERTICAL_SIZE)
