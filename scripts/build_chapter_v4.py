@@ -84,12 +84,9 @@ def unify_schedule_paper(im, quad, delta=(-5, -11, -25)):
 
 def perspective_schedule(im, title_s, rows, quad, source_size, title_size=58, row_size=46,
                          row_step=96, title_y=25, start_y=125, margin=42):
-    """整张文字层按纸面四角透视映射；所有文字先留纸内安全边距，再三倍渲染降采样。"""
-    # 这两页纸张均为菱形视角：阅读起点必须是上尖角，而非左尖角。
-    assert quad[0][1] == min(p[1] for p in quad), '纸张阅读起点必须是上尖角'
-    assert quad[1][0] == max(p[0] for p in quad), '纸张第二角必须是右尖角'
-    assert quad[2][1] == max(p[1] for p in quad), '纸张第三角必须是下尖角'
-    assert quad[3][0] == min(p[0] for p in quad), '纸张第四角必须是左尖角'
+    """把正面排好的文字层按明确角点顺序映射到纸面，保留正常书写的小字块与空白。"""
+    # quad依次对应正面文字层的左上、右上、右下、左下；两页原画纸张朝向不同，
+    # 不能用同一组角点名称强行规定阅读轴，必须分别按原画和参考图确认。
     sw, sh = source_size
     ss = 3
     layer = Image.new('RGBA', (sw*ss, sh*ss), (0, 0, 0, 0))
@@ -156,15 +153,15 @@ pages.append(im)
 
 im = scene('shot-05.png')
 speech(im, ['别抢啦，', '我把时间都排好了。'], (1220, 235), (760, 330), 28)
-# 四角必须按阅读方向排列：纸上→纸右→纸下→纸左；纸色与第6页统一。
-schedule_05_quad = ((951, 1056), (1104, 1128), (781, 1360), (601, 1179))
+# 参考图的书写轴为纸左→纸上；日程只写左上角的小块，不铺满纸张。
+schedule_05_quad = ((601, 1179), (951, 1056), (1104, 1128), (781, 1360))
 unify_schedule_paper(im, schedule_05_quad)
 perspective_schedule(
     im, '星野的日程表',
-    ['1. 陪姐姐散步', '2. 陪妹妹挑书', '3. 陪小满搭城堡，', '   再讲三遍故事'],
+    ['1. 陪姐姐玩', '2. 陪妹妹玩', '3. 陪小满玩'],
     schedule_05_quad,
-    (650, 500), title_size=42, row_size=36, row_step=68,
-    title_y=60, start_y=130, margin=230)
+    (650, 500), title_size=38, row_size=32, row_step=56,
+    title_y=180, start_y=244, margin=42)
 num(im, 5)
 im.save(OUT/'page-05.png')
 pages.append(im)
@@ -174,9 +171,9 @@ speech(im, ['安排得挺好，', '不过得先把他', '休息的时间排上�
 speech(im, ['我也有自己的', '行程啊？'], (450, 235), (584, 760), 30)
 perspective_schedule(
     im, '星野的日程表',
-    ['1. 陪姐姐散步', '2. 陪妹妹挑书', '3. 陪小满搭城堡，', '   再讲三遍故事', '4. 二弟睡觉'],
+    ['1. 陪姐姐玩', '2. 陪妹妹玩', '3. 陪小满玩', '4. 睡觉'],
     ((937, 1142), (1297, 1206), (932, 1579), (562, 1419)),
-    (600, 760), title_size=48, row_size=40, row_step=60,
+    (600, 760), title_size=44, row_size=36, row_step=54,
     title_y=380, start_y=440, margin=32)
 num(im, 6)
 im.save(OUT/'page-06.png')
