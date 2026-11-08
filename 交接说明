@@ -1,4 +1,15 @@
-交接说明
+交接说明（2026-11-08本轮接手后更新）
+
+本轮已恢复Git、文件读写与构建：
+- 当前工作分支：arena/fc8b1382-shi-pin-zhizuo（本会话固定分支，不切换、不另建、不推送其他分支）。
+- 已从origin/main提交6f9b4d6导入用户第5、6页最终原图，保存于art/user-final/chapter-01/，manifest记录来源与SHA-256。
+- scripts/build_chapter_v4.py已只读保护用户定稿；第5、6页不再走旧重画/贴字/日程透视流程。第6页第四项保留“4. 睡觉休息”。
+- 阅读版、竖屏版及两份第一话PDF已重建并目检；其余6页PNG逐像素未变化。
+- 用户原作与家庭关系边界已写入PROJECT_MEMORY.md、AGENTS.md和错误复盘；第三话8页锁定剧情见docs/第三话_用户确认剧情与制作边界.md。
+- 旧PR #1仍为上一会话分支arena/e6b4750e-shi-pin-zhizuo；本会话不得推送该旧分支。后续提交与PR只能从当前固定分支发起。
+
+以下为上一代理交接原文，仅作历史背景；其中旧分支操作指示不得覆盖本会话固定分支规则。
+
 当前沙箱持续报错：The workspace exceeds its snapshot limit.
 Git、文件读写、清理和 gh 均无法执行。本交接目前只在对话中，尚未写入仓库。
 

@@ -1,0 +1,29 @@
+{
+  "authority": "用户最终定稿。所有人物、纸张、日程展示方式、气泡、文字和构图安排均以原图为准；不得重新纠正、重画、改字或重新排版。",
+  "source": {
+    "remote": "origin/main",
+    "commit": "6f9b4d6cad183eb22960e81ef43d58c35ad29f8d"
+  },
+  "pages": [
+    {
+      "page": "05",
+      "source_path": "下载 (5).png",
+      "original": "page-05.original.png",
+      "sha256": "e7c1f7c43c730cfeaf2414afc8125129edbf76fe5c3ec107915c8cef543f4167",
+      "original_size": [1792, 2400],
+      "reading_adaptation": "等比contain至1440×1920，完整保留原图；左右仅补极窄暖纸边。缩放后轻度UnsharpMask，不调色、不裁切、不改字。",
+      "vertical_adaptation": "阅读版原尺寸居中置于1440×2146的(0,113)，上下补暖纸色。"
+    },
+    {
+      "page": "06",
+      "source_path": "下载 (6).png",
+      "original": "page-06.original.png",
+      "sha256": "dcfa0b406d213294239ad6da052e1e427727b0626593d71d5b366efbe9f9c50e",
+      "original_size": [1696, 2528],
+      "locked_text": "第四项为“4. 睡觉休息”，不得改回“4. 睡觉”。",
+      "reading_adaptation": "用户原图本身为53:79竖屏。等比contain至1440×1920，完整保留原图及原有上下边，左右补暖纸边；不裁切、不拉伸。缩放后轻度UnsharpMask。",
+      "vertical_adaptation": "直接由用户竖屏原图等比适配至1440×2146并轻度清晰化，保留原有上下边；不套入二次上下扩边，以免缩小画面。此页为用户竖屏定稿的专门适配，不宣称与阅读版中央区域逐像素一致。"
+    }
+  ],
+  "build_protection": "scripts/build_chapter_v4.py 只读取original，不写回original；第五、六页绕过旧scene/speech/schedule流程。"
+}

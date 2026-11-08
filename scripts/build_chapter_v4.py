@@ -1,5 +1,7 @@
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont
+import hashlib
+import json
+from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
 import numpy as np
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
@@ -26,6 +28,31 @@ def ft(n):
 
 def scene(name):
     return Image.open(SRC / name).convert('RGB').resize((W, H), Image.Resampling.LANCZOS)
+
+
+USER_FINAL = ROOT / 'art/user-final/chapter-01'
+USER_MANIFEST = json.loads((USER_FINAL / 'manifest.json').read_text(encoding='utf-8'))
+
+
+def user_final_page(page, size):
+    """用户定稿只读适配：完整contain、不裁切、不拉伸、不改字、不重排。
+
+    第五页阅读版与竖屏版沿用中央原画规则；第六页用户原图本身为53:79，
+    竖屏版直接从原图适配，避免二次扩边缩小画面。原图永远只读。
+    """
+    spec = next(p for p in USER_MANIFEST['pages'] if p['page'] == page)
+    path = USER_FINAL / spec['original']
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    if digest != spec['sha256']:
+        raise RuntimeError(f'用户定稿原图哈希不符，禁止覆盖或替换: {path}')
+    source = Image.open(path).convert('RGB')
+    if list(source.size) != spec['original_size']:
+        raise RuntimeError(f'用户定稿原图尺寸不符: {path}: {source.size}')
+    fitted = ImageOps.contain(source, size, Image.Resampling.LANCZOS)
+    fitted = fitted.filter(ImageFilter.UnsharpMask(radius=0.65, percent=38, threshold=3))
+    result = Image.new('RGB', size, PAPER)
+    result.paste(fitted, ((size[0]-fitted.width)//2, (size[1]-fitted.height)//2))
+    return result
 
 
 def cover_title(d, s, size=66):
@@ -151,32 +178,12 @@ num(im, 4)
 im.save(OUT/'page-04.png')
 pages.append(im)
 
-im = scene('shot-05.png')
-speech(im, ['别抢啦，', '我把时间都排好了。'], (1220, 235), (760, 330), 28)
-# 参考图的书写轴为纸左→纸上；日程只写左上角的小块，不铺满纸张。
-schedule_05_quad = ((601, 1179), (951, 1056), (1104, 1128), (781, 1360))
-unify_schedule_paper(im, schedule_05_quad)
-perspective_schedule(
-    im, '星野的日程表',
-    ['1. 陪姐姐玩', '2. 陪妹妹玩', '3. 陪小满玩'],
-    schedule_05_quad,
-    (650, 500), title_size=38, row_size=32, row_step=56,
-    title_y=180, start_y=244, margin=42)
-num(im, 5)
+# 用户最终定稿：不得再调用旧原画、气泡、纸色或日程透视流程。
+im = user_final_page('05', (W, H))
 im.save(OUT/'page-05.png')
 pages.append(im)
 
-im = scene('shot-06.png')
-speech(im, ['安排得挺好，', '不过得先把他', '休息的时间排上。'], (1090, 155), (1050, 450), 28)
-speech(im, ['我也有自己的', '行程啊？'], (300, 170), (400, 450), 30)
-# 人设参考整页重画后的正常A4竖向纸：上短边靠近母亲，下短边朝向读者。
-perspective_schedule(
-    im, '星野的日程表',
-    ['1. 陪姐姐玩', '2. 陪妹妹玩', '3. 陪小满玩', '4. 睡觉'],
-    ((571, 1101), (891, 1101), (947, 1470), (509, 1470)),
-    (600, 600), title_size=50, row_size=40, row_step=80,
-    title_y=70, start_y=170, margin=40)
-num(im, 6)
+im = user_final_page('06', (W, H))
 im.save(OUT/'page-06.png')
 pages.append(im)
 
@@ -191,16 +198,19 @@ im.save(OUT/'page-07.png')
 pages.append(im)
 
 pages[0].save(ROOT/'deliverables/第一话_V4_精细化重制.pdf', save_all=True,
-              append_images=pages[1:], resolution=150)
+              append_images=pages[1:], resolution=150, quality=95, subsampling=0)
 vertical_pages = []
 for source_path in sorted(OUT.glob('page-*.png')):
     source = Image.open(source_path).convert('RGB')
     assert source.size == (W, H), f'Unexpected approved page size: {source_path}: {source.size}'
-    vertical = Image.new('RGB', VERTICAL_SIZE, PAPER)
-    vertical.paste(source, (0, (VERTICAL_SIZE[1]-H)//2))
+    if source_path.name == 'page-06.png':
+        vertical = user_final_page('06', VERTICAL_SIZE)
+    else:
+        vertical = Image.new('RGB', VERTICAL_SIZE, PAPER)
+        vertical.paste(source, (0, (VERTICAL_SIZE[1]-H)//2))
     vertical.save(VERTICAL_OUT/source_path.name)
     vertical_pages.append(vertical)
 vertical_pages[0].save(ROOT/'deliverables/第一话_竖屏全页漫画.pdf', save_all=True,
-                       append_images=vertical_pages[1:], resolution=150)
+                       append_images=vertical_pages[1:], resolution=150, quality=95, subsampling=0)
 print('Built chapter 1 with measured elliptical speech balloons:', len(pages), 'pages')
 print('Built reference-ratio vertical edition:', len(vertical_pages), 'pages', VERTICAL_SIZE)
