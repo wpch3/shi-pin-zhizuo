@@ -17,9 +17,11 @@
 - `deliverables/full-v4/chapter-03/`、`deliverables/full-v4-vertical/chapter-03/`：第三话阅读版与竖屏版独立PNG。
 - `docs/第三话_用户确认剧情与制作边界.md`：第三话已确认的8个事件、10页映射、2026-11-08开工补充决定与禁止扩写边界。
 - `docs/第三话_正式分镜与台词.md`：第三话封面+9页正片正式分镜、台词、家居/外出服与一杯Y形双头吸管道具锁定。
-- `art/chapter-03-v4/`：第三话已实际生成并目检的封面与9张正片原画；`outfits/` 为家居服/外出服设定，不得直接冒充封面或正片。
+- `art/chapter-03-v5/`：第三话**当前构建唯一来源**（2026-11-08返修版，四边铺满、无画框无空白带）；含重绘7张与保留的 shot-01/02/03，目录内 `canvas-review.json` 记录人眼复核过的预筛误报。
+- `art/chapter-03-v4/`：返修前原画，保留作缺陷证据，**不再进构建**；`outfits/` 为家居服/外出服设定，不得直接冒充封面或正片。
 - `scripts/build_chapter_v4.py`：按每页原生构图和留白定制排版的构建脚本；第一话PDF已改用无损PNG/Flate导出。
-- `scripts/build_chapter03_v4.py`：第三话构建入口；缺少已审查原画时明确失败，禁止占位图冒充正片。
+- `scripts/build_chapter03_v4.py`：第三话构建入口（读 `art/chapter-03-v5/`）；`scene()` 用 `ImageOps.fit` 保证四边铺满不贴纸底，页码按背景亮度自动反色描边；缺少已审查原画时明确失败，禁止占位图冒充正片。
+- `scripts/audit_page_canvas.py`：画面级预筛（黑边、画内框线、纯纸空白带、纸色外边距、画风与线宽漂移），支持 `--anchor` 画风锚点与 `canvas-review.json` 人眼复核台账；只做预筛，不拥有验收权。
 - `deliverables/第二话_二姐的独占时间.pdf`：第二话独立封面＋7页正片，共8页。
 - `deliverables/第二话_竖屏全页漫画.pdf`：第二话1440×2146竖屏视频版。
 - `deliverables/full-v4/chapter-02/`、`deliverables/full-v4-vertical/chapter-02/`：第二话阅读版与竖屏版独立PNG。
