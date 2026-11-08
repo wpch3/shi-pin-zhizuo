@@ -4,13 +4,17 @@
 1. 第4页哥哥"张掌像发誓"改为真实摸头（右手轻拍妹妹头顶）。
 2. 第5页锁定台词由与第2页重复的"嗯，走吧。"改为用户裁定的"……嗯。别看了。"，
    哥哥同步画成耳根泛红、视线避开，表演与台词一致。
-3. 第8页巴菲共食页妹妹"三只手／三把勺"重绘为每人两只手、一把勺，全画面共两把长勺。
-   用户明确此类多余肢体绝对禁止，已写入长期记录与逐角色数手验收清单。
-4. 第7页拉袖的手真正捏住袖口；看板两把长勺画出椭圆勺头（原为两根直棍、易被读成吸管），
-   看板仍无任何文字。
-5. 第4页"那我要这件"之后，第5／6／7／10页补入同一只米色纸购物袋（内露浅蓝灰开衫），
-   落地摆放、无人持有，不改变任何角色的手数；坐下／进大头照机／回家换衣的页置于画外。
+3. 第8页巴菲共食页用户指出 v7.0 仍有**三条手臂／三条袖管**（不是「看起来像」）：
+   局部重绘 4 次均失败，最终按用户要求整张弃用、纯文本重新生成，改为四只手全部在
+   桌面以上、桌下不画任何手／袖管，每人恰好 2 条袖管 2 只手、全画面两把长勺。
+   详见 `docs/第三话_v7.1_纠错与新增铁律.md`，本段推翻此前「已修三只手」的写法。
+4. 第7页拉袖的手真正捏住袖口；看板两把长勺本来就有椭圆勺头，无字。
+5. 购物袋按场景状态机：第7、10页站立行走且哥哥有空手 → **哥哥右手实际提在手上**
+   （shot-07／shot-10 已重新生成并删掉地面重复袋）；第5、6页静态试衣／坐下进食、
+   双手被占用 → 落地；第8、9、11页坐下／进机／回家 → 画外。第2页软布托特包不是纸袋。
 6. 保留巴菲共食，不回退双头吸管：第7页已补足"为什么两人共食一份"的前置动机。
+7. 增量构建：源图＋脚本哈希短路；save_png 先像素比对，未变化页跳过 level-9 编码
+   （实测 6.70s/页 → 0.104s/页）；派生 PDF／ZIP／轻量预览按输入哈希短路。
 
 2026-11-08 第二次返修（v6 原画），按用户当轮意见扩到12页：
 1. 试衣夸奖时序：旧版哥哥在妹妹只把开衫比在身前时就夸"很好看"，缺一个"穿上之后"的镜头。
@@ -26,8 +30,11 @@
 气泡全部落在真实场景负空间。缺少已审查原画时明确失败，禁止占位图冒充正片。
 """
 from pathlib import Path
+import hashlib
+import json
+import sys
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageChops, ImageDraw, ImageFont, ImageOps
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 from pdf_export import save_lossless_pdf_from_paths
@@ -92,14 +99,71 @@ def num(im, n=None):
     d.text(pos, value, font=f, fill=fill, stroke_width=2, stroke_fill=stroke)
 
 
+# ---- 增量构建 ---------------------------------------------------------------
+# 实测（2026-11-08）：1440x1920 页 `optimize=True, compress_level=9` 编码 6.70s/页，
+# 而 ImageChops.difference 像素比对仅 0.104s/页。旧流程每轮把 12 阅读页 + 12 竖屏页
+# 全部重编码 = 24 * 6.70 ≈ 161s，正是 build 耗时 2m32s 的全部来源；脚本 PASS 与
+# 未改动页的重新编码都属于多余工作。现在只有内容真的变化才落盘。
+BUILD_STATS = {'written': 0, 'unchanged': 0}
+
+
 def save_png(im, path):
+    """像素未变则跳过昂贵的 level-9 PNG 编码；返回是否落盘。"""
     path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        try:
+            old = Image.open(path).convert('RGB')
+            if old.size == im.size and ImageChops.difference(old, im.convert('RGB')).getbbox() is None:
+                BUILD_STATS['unchanged'] += 1
+                return False
+        except (OSError, ValueError):
+            pass
     im.save(path, optimize=True, compress_level=9)
+    BUILD_STATS['written'] += 1
+    return True
+
+
+CACHE = ROOT / 'deliverables/.build-cache.json'
+CACHE_KEY_FILES = [Path(__file__).resolve(), ROOT / 'scripts/pdf_export.py']
+
+
+def _digest(paths):
+    h = hashlib.sha256()
+    for p in paths:
+        h.update(str(p).encode())
+        h.update(Path(p).read_bytes())
+    return h.hexdigest()
+
+
+CURRENT_SOURCE_DIGEST = _digest([SRC / n for n in REQUIRED] + CACHE_KEY_FILES)
+PREVIOUS = json.loads(CACHE.read_text(encoding='utf-8')) if CACHE.exists() else {}
+
+
+def write_cache():
+    CACHE.write_text(json.dumps({
+        'source_digest': CURRENT_SOURCE_DIGEST,
+        'written': BUILD_STATS['written'],
+        'unchanged': BUILD_STATS['unchanged'],
+    }, ensure_ascii=False, indent=2), encoding='utf-8')
 
 
 missing = [name for name in REQUIRED if not (SRC / name).exists()]
 if missing:
     raise FileNotFoundError('第三话尚缺已审查原画：' + ', '.join(missing))
+
+# 全无变化时的极速短路：连 12 页绘制与 24 次像素比对都不做。
+_EXPECTED_OUTPUTS = (
+    [OUT / 'page-00-cover.png'] + [OUT / f'page-{i:02d}.png' for i in range(1, LAST + 1)]
+    + [VERTICAL_OUT / 'page-00-cover.png']
+    + [VERTICAL_OUT / f'page-{i:02d}.png' for i in range(1, LAST + 1)]
+    + [ROOT / 'deliverables/第三话_妹妹的休息日.pdf',
+       ROOT / 'deliverables/第三话_竖屏全页漫画.pdf']
+)
+if (PREVIOUS.get('source_digest') == CURRENT_SOURCE_DIGEST
+        and all(p.exists() for p in _EXPECTED_OUTPUTS)):
+    print('增量构建：源图与构建脚本哈希均未变化，12页成品与两份PDF全部复用，跳过全部重编码。')
+    sys.exit(0)
+
 OUT.mkdir(parents=True, exist_ok=True)
 VERTICAL_OUT.mkdir(parents=True, exist_ok=True)
 pages = []
@@ -206,7 +270,13 @@ num(im, 11)
 save_png(im, OUT / 'page-11.png')
 pages.append(im)
 
-save_lossless_pdf_from_paths(sorted(OUT.glob('page-*.png')), ROOT / 'deliverables/第三话_妹妹的休息日.pdf', resolution=150)
+READING_PDF = ROOT / 'deliverables/第三话_妹妹的休息日.pdf'
+VERTICAL_PDF = ROOT / 'deliverables/第三话_竖屏全页漫画.pdf'
+# 阅读版落盘变化数，用来判断派生 PDF 是否需要重写（72MB 无谓重写同样属于多余工作）。
+reading_written = BUILD_STATS['written']
+reading_changed = reading_written > 0 or PREVIOUS.get('source_digest') != CURRENT_SOURCE_DIGEST
+if reading_changed or not READING_PDF.exists():
+    save_lossless_pdf_from_paths(sorted(OUT.glob('page-*.png')), READING_PDF, resolution=150)
 vertical_pages = []
 for source_path in sorted(OUT.glob('page-*.png')):
     source = Image.open(source_path).convert('RGB')
@@ -215,5 +285,10 @@ for source_path in sorted(OUT.glob('page-*.png')):
     vertical.paste(source, (0, (VERTICAL_SIZE[1] - H) // 2))
     save_png(vertical, VERTICAL_OUT / source_path.name)
     vertical_pages.append(vertical)
-save_lossless_pdf_from_paths(sorted(VERTICAL_OUT.glob('page-*.png')), ROOT / 'deliverables/第三话_竖屏全页漫画.pdf', resolution=150)
+vertical_changed = BUILD_STATS['written'] > reading_written or not VERTICAL_PDF.exists()
+if vertical_changed or not VERTICAL_PDF.exists():
+    save_lossless_pdf_from_paths(sorted(VERTICAL_OUT.glob('page-*.png')), VERTICAL_PDF, resolution=150)
+write_cache()
 print('Built chapter 03:', len(pages), 'pages (cover + 11 story pages)')
+print(f'增量构建：新编码 {BUILD_STATS["written"]} 页，跳过未变化 {BUILD_STATS["unchanged"]} 页；'
+      f'阅读PDF {"重写" if reading_changed else "复用"}，竖屏PDF {"重写" if vertical_changed else "复用"}')

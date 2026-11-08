@@ -2,3 +2,6 @@
 __pycache__/
 *.pyc
 .DS_Store
+# 增量构建缓存（只记录哈希，不是交付物）
+deliverables/.build-cache.json
+deliverables/.lightweight-cache.json

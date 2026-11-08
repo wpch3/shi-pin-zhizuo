@@ -18,7 +18,9 @@
 用法：.venv/bin/python scripts/export_lightweight_preview.py
 """
 from pathlib import Path
+import hashlib
 import io
+import json
 import zipfile
 
 from PIL import Image
@@ -40,10 +42,29 @@ def label(path: Path, index: int) -> str:
     return '封面' if 'cover' in path.name else f'第{int(path.stem.split("-")[-1])}页'
 
 
+CACHE = OUT_DIR / '.lightweight-cache.json'
+
+
+def page_digest(paths):
+    """12 张 PNG 母版字节哈希：只要任何一页变了，三件套才需要重建。"""
+    h = hashlib.sha256()
+    for path in paths:
+        h.update(path.name.encode())
+        h.update(path.read_bytes())
+    return h.hexdigest()
+
+
 def main():
     pages = sorted(SRC.glob('page-*.png'))
     if len(pages) != 12:
         raise SystemExit(f'阅读版应为 12 页，实测 {len(pages)} 页：{SRC}')
+    digest = page_digest(pages)
+    outputs = [PREVIEW, ZIP, GALLERY]
+    prev = json.loads(CACHE.read_text(encoding='utf-8')) if CACHE.exists() else {}
+    if prev.get('page_digest') == digest and all(p.exists() for p in outputs):
+        print('增量导出：12 张 PNG 母版未变化，轻量PDF / ZIP / 看图页全部复用，跳过重建。')
+        return
+    CACHE.write_text(json.dumps({'page_digest': digest}, ensure_ascii=False), encoding='utf-8')
 
     # 1. 独立 PNG 图片版 ZIP（原样打包，字节级等同正式 PNG）
     with zipfile.ZipFile(ZIP, 'w', compression=zipfile.ZIP_STORED) as zf:
