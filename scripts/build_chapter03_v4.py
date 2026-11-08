@@ -8,7 +8,8 @@
    局部重绘 4 次均失败，最终按用户要求整张弃用、纯文本重新生成，改为四只手全部在
    桌面以上、桌下不画任何手／袖管，每人恰好 2 条袖管 2 只手、全画面两把长勺。
    详见 `docs/第三话_v7.1_纠错与新增铁律.md`，本段推翻此前「已修三只手」的写法。
-4. 第7页拉袖的手真正捏住袖口；看板两把长勺本来就有椭圆勺头，无字。
+4. 第7页拉袖的手真正捏住袖口；看板为图标化简笔，杯中两根斜插长柄餐具、不画勺碗，无字
+   （v7.2 按 4 倍放大实图更正：既不是「直棍改勺头」，也不是「本来就有椭圆勺头」）。
 5. 购物袋按场景状态机：第7、10页站立行走且哥哥有空手 → **哥哥右手实际提在手上**
    （shot-07／shot-10 已重新生成并删掉地面重复袋）；第5、6页静态试衣／坐下进食、
    双手被占用 → 落地；第8、9、11页坐下／进机／回家 → 画外。第2页软布托特包不是纸袋。
@@ -274,7 +275,9 @@ READING_PDF = ROOT / 'deliverables/第三话_妹妹的休息日.pdf'
 VERTICAL_PDF = ROOT / 'deliverables/第三话_竖屏全页漫画.pdf'
 # 阅读版落盘变化数，用来判断派生 PDF 是否需要重写（72MB 无谓重写同样属于多余工作）。
 reading_written = BUILD_STATS['written']
-reading_changed = reading_written > 0 or PREVIOUS.get('source_digest') != CURRENT_SOURCE_DIGEST
+# PDF 只由这些 PNG 的字节生成：像素全部未变时 PDF 必然相同，不因脚本注释/文档改动而
+# 无谓重写 72MB。判定只依据「本轮是否真的落盘了新页」，不依据脚本哈希差异。
+reading_changed = reading_written > 0
 if reading_changed or not READING_PDF.exists():
     save_lossless_pdf_from_paths(sorted(OUT.glob('page-*.png')), READING_PDF, resolution=150)
 vertical_pages = []
