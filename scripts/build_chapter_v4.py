@@ -5,6 +5,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
 import numpy as np
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
+from pdf_export import save_lossless_pdf
 
 ROOT = Path(__file__).resolve().parents[1]
 W, H = 1440, 1920
@@ -197,8 +198,7 @@ num(im, 7)
 im.save(OUT/'page-07.png')
 pages.append(im)
 
-pages[0].save(ROOT/'deliverables/第一话_V4_精细化重制.pdf', save_all=True,
-              append_images=pages[1:], resolution=150, quality=95, subsampling=0)
+save_lossless_pdf(pages, ROOT/'deliverables/第一话_V4_精细化重制.pdf', resolution=150)
 vertical_pages = []
 for source_path in sorted(OUT.glob('page-*.png')):
     source = Image.open(source_path).convert('RGB')
@@ -210,7 +210,6 @@ for source_path in sorted(OUT.glob('page-*.png')):
         vertical.paste(source, (0, (VERTICAL_SIZE[1]-H)//2))
     vertical.save(VERTICAL_OUT/source_path.name)
     vertical_pages.append(vertical)
-vertical_pages[0].save(ROOT/'deliverables/第一话_竖屏全页漫画.pdf', save_all=True,
-                       append_images=vertical_pages[1:], resolution=150, quality=95, subsampling=0)
+save_lossless_pdf(vertical_pages, ROOT/'deliverables/第一话_竖屏全页漫画.pdf', resolution=150)
 print('Built chapter 1 with measured elliptical speech balloons:', len(pages), 'pages')
 print('Built reference-ratio vertical edition:', len(vertical_pages), 'pages', VERTICAL_SIZE)

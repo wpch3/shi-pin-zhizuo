@@ -12,8 +12,11 @@
 - `deliverables/full-v4-vertical/chapter-01/`：8张竖屏视频PNG，1440×2146；定版原画逐像素保留，只在上下补暖纸色。
 - `art/chapter-01-v4/`：本次重新绘制的封面与7张剧情原图，未复用V3场景或人设立绘；其中第5、6页旧原画已被用户最终定稿取代，不再进入正式构建。
 - `art/user-final/chapter-01/`：用户上传的第一话第5、6页最终原图、来源与哈希清单。构建脚本只读保护，不得重画、改字或重新排版；第6页第四项为“4. 睡觉休息”。
-- `docs/第三话_用户确认剧情与制作边界.md`：第三话已确认的8页内容与禁止扩写边界；尚未正式分镜或生图。
-- `scripts/build_chapter_v4.py`：按每页原生构图和留白定制排版的构建脚本。
+- `docs/第三话_用户确认剧情与制作边界.md`：第三话已确认的8页内容、2026-11-08开工补充决定与禁止扩写边界。
+- `docs/第三话_正式分镜与台词.md`：第三话封面+8页正片正式分镜、台词、家居/外出服与一杯Y形双头吸管道具锁定；封面和正片原画尚待下一轮实际生图。
+- `art/chapter-03-v4/outfits/`：第三话已生成并目检的家居服/外出服设定，不得直接冒充封面或正片。
+- `scripts/build_chapter_v4.py`：按每页原生构图和留白定制排版的构建脚本；第一话PDF已改用无损PNG/Flate导出。
+- `scripts/build_chapter03_v4.py`：第三话构建入口；缺少已审查原画时明确失败，禁止占位图冒充正片。
 - `deliverables/第二话_二姐的独占时间.pdf`：第二话独立封面＋7页正片，共8页。
 - `deliverables/第二话_竖屏全页漫画.pdf`：第二话1440×2146竖屏视频版。
 - `deliverables/full-v4/chapter-02/`、`deliverables/full-v4-vertical/chapter-02/`：第二话阅读版与竖屏版独立PNG。
@@ -46,9 +49,11 @@
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt pymupdf
+.venv/bin/pip install -r requirements.txt
 .venv/bin/python scripts/build_chapter_v4.py
 .venv/bin/python scripts/build_chapter02_v4.py
+# 第三话原画齐备并通过目检后再运行：
+# .venv/bin/python scripts/build_chapter03_v4.py
 # 如需重建七人正式人设卡，再运行：
 .venv/bin/python scripts/build_full_v3.py
 ```
