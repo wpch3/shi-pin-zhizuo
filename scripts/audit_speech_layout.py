@@ -9,7 +9,7 @@ from speech_text_layout import measure_speech_text
 
 ROOT = Path(__file__).resolve().parents[1]
 FONT = ROOT / 'assets/fonts/NotoSansCJKsc-Bold.otf'
-FILES = [ROOT / 'scripts/build_chapter_v4.py', ROOT / 'scripts/build_chapter02_v4.py', ROOT / 'scripts/build_chapter03_v4.py']
+FILES = [ROOT / 'scripts/build_chapter_v4.py', ROOT / 'scripts/build_chapter02_v4.py', ROOT / 'scripts/build_chapter03_v4.py', ROOT / 'scripts/build_chapter04_v1.py']
 draw = ImageDraw.Draw(Image.new('RGB', (16, 16)))
 by_scene = defaultdict(list)
 records = []
