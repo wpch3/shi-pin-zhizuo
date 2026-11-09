@@ -49,7 +49,7 @@ SERIES_LINE = '《二弟的休息日被全家预约了》 第四话'
 # v7.2/v7.3 铁律：标题及「是否补封面台词气泡」必须用户裁定后才写入。
 # 第三话最终未补封面气泡（新增台词需用户裁定），本话默认沿用「不补」；
 # 用户裁定要补时把它改成 True，只重建封面页与派生交付。
-COVER_TITLE_APPROVED = False
+COVER_TITLE_APPROVED = True  # 用户 2026-11-09 裁定：今晚小叔归我啦
 # 用户若要补封面气泡，把它改 True 并在封面处取消注释那一行 speech(...)。
 COVER_BUBBLE_APPROVED = False
 
