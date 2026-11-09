@@ -1,0 +1,17 @@
+[
+  {
+    "file": "page-00-cover.png",
+    "reason": "v@1262-1300 对应源画房门木门框，场景结构，1.5倍放大确认",
+    "verified": true
+  },
+  {
+    "file": "page-01.png",
+    "reason": "v@77-191 对应源画走廊墙角/门框立柱，场景结构，1.5倍放大确认",
+    "verified": true
+  },
+  {
+    "file": "page-02.png",
+    "reason": "h@1849 对应源画地毯与木地板分界线，场景结构，放大确认",
+    "verified": true
+  }
+]
