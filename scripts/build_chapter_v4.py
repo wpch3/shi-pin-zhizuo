@@ -1,18 +1,23 @@
 from pathlib import Path
 import hashlib
 import json
-from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
+import sys
+from PIL import Image, ImageChops, ImageDraw, ImageFont, ImageFilter, ImageOps
 import numpy as np
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 from pdf_export import save_lossless_pdf_from_paths
 
 ROOT = Path(__file__).resolve().parents[1]
+# 当前重绘尚未验收；避免误覆盖旧正式交付。
+if sys.argv[1:] != ['--draft']:
+    raise SystemExit('第一话重绘仍在制作中；仅可用 --draft 生成隔离试排，禁止覆盖正式交付。')
+DRAFT = ROOT / 'deliverables/drafts/chapter-01'
 W, H = 1440, 1920
 SRC = ROOT / 'art/chapter-01-v4'
-OUT = ROOT / 'deliverables/full-v4/chapter-01'
+OUT = DRAFT / 'reading'
 OUT.mkdir(parents=True, exist_ok=True)
-VERTICAL_OUT = ROOT / 'deliverables/full-v4-vertical/chapter-01'
+VERTICAL_OUT = DRAFT / 'vertical'
 VERTICAL_OUT.mkdir(parents=True, exist_ok=True)
 VERTICAL_SIZE = (1440, 2146)
 FONT = ROOT / 'assets/fonts/NotoSansCJKsc-Bold.otf'
@@ -35,39 +40,50 @@ USER_FINAL = ROOT / 'art/user-final/chapter-01'
 USER_MANIFEST = json.loads((USER_FINAL / 'manifest.json').read_text(encoding='utf-8'))
 
 
-def user_final_page(page, size):
-    """用户定稿只读适配：完整contain、不裁切、不拉伸、不改字、不重排。
+def verify_user_final_archive():
+    """用户第5/6页定稿归档：文件与哈希只读保留，但2026-11-09起不再作为正式图源。
 
-    2026-11-08用户补充提供第5/6页无重影新图后，正式构建优先使用manifest.replacement；
-    旧original仍只读保留并校验来源。第五页阅读版与竖屏版沿用中央原画规则；
-    第六页用户新图本身为53:79，竖屏版直接从新图适配，避免二次扩边缩小画面。
+    整话重绘并轨后，第5/6页改用 art/chapter-01-v4/shot-05.png、shot-06.png 新原画，
+    中文日程表／气泡／页码全部由本脚本精确绘制（禁止AI生成中文）。此函数只校验
+    归档原件与replacement的SHA-256及尺寸，确保旧定稿未被覆盖或改动，不读取其像素。
     """
-    spec = next(p for p in USER_MANIFEST['pages'] if p['page'] == page)
-    original_path = USER_FINAL / spec['original']
-    original_digest = hashlib.sha256(original_path.read_bytes()).hexdigest()
-    if original_digest != spec['sha256']:
-        raise RuntimeError(f'用户定稿旧原图哈希不符，禁止覆盖或替换: {original_path}')
-    replacement = spec.get('replacement')
-    if replacement:
-        path = USER_FINAL / replacement['path']
-        expected_digest = replacement['sha256']
-        expected_size = replacement['size']
-    else:
-        path = original_path
-        expected_digest = spec['sha256']
-        expected_size = spec['original_size']
-    digest = hashlib.sha256(path.read_bytes()).hexdigest()
-    if digest != expected_digest:
-        raise RuntimeError(f'用户定稿当前图哈希不符，禁止覆盖或替换: {path}')
-    source = Image.open(path).convert('RGB')
-    if list(source.size) != expected_size:
-        raise RuntimeError(f'用户定稿当前图尺寸不符: {path}: {source.size}')
-    fitted = ImageOps.contain(source, size, Image.Resampling.LANCZOS)
-    if not replacement:
-        fitted = fitted.filter(ImageFilter.UnsharpMask(radius=0.65, percent=38, threshold=3))
-    result = Image.new('RGB', size, PAPER)
-    result.paste(fitted, ((size[0]-fitted.width)//2, (size[1]-fitted.height)//2))
-    return result
+    for spec in USER_MANIFEST['pages']:
+        original = USER_FINAL / spec['original']
+        if hashlib.sha256(original.read_bytes()).hexdigest() != spec['sha256']:
+            raise RuntimeError(f'用户定稿归档原件哈希不符，禁止覆盖: {original}')
+        replacement = spec.get('replacement')
+        if replacement:
+            path = USER_FINAL / replacement['path']
+            if hashlib.sha256(path.read_bytes()).hexdigest() != replacement['sha256']:
+                raise RuntimeError(f'用户定稿归档replacement哈希不符: {path}')
+            if list(Image.open(path).size) != replacement['size']:
+                raise RuntimeError(f'用户定稿归档尺寸不符: {path}')
+    return True
+
+
+verify_user_final_archive()
+
+
+def schedule_card(im, box, rows, title='星野的日程表', title_size=46, row_size=38,
+                  row_step=92, margin=34, tilt=0):
+    """脚本精确绘制中文日程卡：白底细边框＋逐字排版，可轻微倾斜，绝不交给AI写中文。"""
+    x0, y0, x1, y1 = box
+    w, h = x1-x0, y1-y0
+    card = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(card)
+    d.rectangle((0, 0, w-1, h-1), fill=(250, 247, 240, 255), outline=(70, 66, 62, 255), width=2)
+    d.text((margin, 26), title, font=ft(title_size), fill=RED)
+    y = 26 + title_size + 42
+    for row in rows:
+        d.text((margin, y), row, font=ft(row_size), fill=INK)
+        y += row_step
+    assert y < h - 16, '日程卡文字超出安全区'
+    if tilt:
+        card = card.rotate(tilt, resample=Image.Resampling.BICUBIC, expand=True)
+        x0 -= (card.width-w)//2
+        y0 -= (card.height-h)//2
+    im.paste(card, (x0, y0), card)
+    return (x0, y0, x0+card.width, y0+card.height)
 
 
 def cover_title(d, s, size=66):
@@ -154,7 +170,51 @@ def perspective_schedule(im, title_s, rows, quad, source_size, title_size=58, ro
     im.paste(warped, (0, 0), warped)
 
 
+def save_png_if_changed(im, path):
+    """草稿逐像素不变即复用，避免无谓的 PNG 编码；不改正式目录。"""
+    if path.exists():
+        with Image.open(path) as existing:
+            old = existing.convert('RGB')
+        if old.size == im.size and ImageChops.difference(old, im.convert('RGB')).getbbox() is None:
+            return False
+    tmp = path.with_name(path.name + '.tmp')
+    try:
+        im.convert('RGB').save(tmp, format='PNG')
+        tmp.replace(path)
+    finally:
+        tmp.unlink(missing_ok=True)
+    return True
+
+
+def file_sha256(path):
+    h = hashlib.sha256()
+    with path.open('rb') as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b''):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def ensure_draft_pdf(paths, pdf_path, previous):
+    """页图和 PDF 自身哈希都一致才复用；先写临时文件再原子替换。"""
+    digest = hashlib.sha256()
+    for path in paths:
+        digest.update(path.name.encode('utf-8'))
+        digest.update(bytes.fromhex(file_sha256(path)))
+    source = digest.hexdigest()
+    if (pdf_path.exists() and previous.get('source') == source
+            and previous.get('pdf') == file_sha256(pdf_path)):
+        return {'source': source, 'pdf': previous['pdf']}, False
+    tmp = pdf_path.with_name(pdf_path.name + '.tmp')
+    try:
+        save_lossless_pdf_from_paths(paths, tmp, resolution=150)
+        tmp.replace(pdf_path)
+    finally:
+        tmp.unlink(missing_ok=True)
+    return {'source': source, 'pdf': file_sha256(pdf_path)}, True
+
+
 pages = []
+reading_changed = 0
 
 im = scene('cover.png')
 d = ImageDraw.Draw(im)
@@ -163,67 +223,105 @@ speech(im, ['星野，这次长假，', '先陪我，好不好？'], (520, 220),
 d = ImageDraw.Draw(im)
 d.text((60, 1780), '《二弟的休息日被全家预约了》 第一话', font=ft(25), fill=RED, stroke_width=2, stroke_fill=PAPER)
 num(im)
-im.save(OUT/'page-00-cover.png')
+reading_changed += save_png_if_changed(im, OUT/'page-00-cover.png')
 pages.append(im)
 
 im = scene('shot-01.png')
 speech(im, ['项目搞定！', '从今天起，我是家里蹲。'], (390, 110), (735, 400), 30)
 num(im, 1)
-im.save(OUT/'page-01.png')
+reading_changed += save_png_if_changed(im, OUT/'page-01.png')
 pages.append(im)
 
 im = scene('shot-02.png')
 speech(im, ['这次我会多住一阵子，', '以前没时间陪你的，', '慢慢补回来。'],
        (255, 335), (510, 750), 28)
 num(im, 2)
-im.save(OUT/'page-02.png')
+reading_changed += save_png_if_changed(im, OUT/'page-02.png')
 pages.append(im)
 
 im = scene('shot-03.png')
 speech(im, ['我刚回来，', '今天先归我。'], (230, 180), (336, 480), 30)
 speech(im, ['二哥，', '今天先陪我！'], (1120, 400), (1008, 704), 30)
 num(im, 3)
-im.save(OUT/'page-03.png')
+reading_changed += save_png_if_changed(im, OUT/'page-03.png')
 pages.append(im)
 
 im = scene('shot-04.png')
-speech(im, ['小满，', '连你也来抢呀？'], (1130, 340), (1176, 624), 28)
+speech(im, ['小满，', '连你也来抢呀？'], (1130, 200), (1176, 624), 28)
 speech(im, ['小叔先陪我', '搭城堡啦。'], (200, 680), (368, 912), 28)
 num(im, 4)
-im.save(OUT/'page-04.png')
+reading_changed += save_png_if_changed(im, OUT/'page-04.png')
 pages.append(im)
 
-# 用户最终定稿：不得再调用旧原画、气泡、纸色或日程透视流程。
-im = user_final_page('05', (W, H))
-im.save(OUT/'page-05.png')
+# 第5/6页：2026-11-09 整话重绘并轨，正式图源改为新原画；中文全部由脚本精确绘制。
+# 旧用户定稿文件与哈希只读归档（verify_user_final_archive），不再作为图源。
+im = scene('shot-05.png')
+schedule_card(im, (55, 45, 585, 535),
+              ['1. 陪姐姐玩', '2. 陪妹妹玩', '3. 陪小满玩'],
+              title_size=46, row_size=39, row_step=96, tilt=-3)
+# 纸上笔迹单独按实际纸张透视排版，避免AI假字；此页的手位仍须放大复核。
+perspective_schedule(im, '星野的日程表', ['1. 陪姐姐玩', '2. 陪妹妹玩', '3. 陪小满玩'],
+                     ((660, 1195), (775, 1150), (880, 1225), (770, 1275)),
+                     (360, 360), title_size=34, row_size=27, row_step=65,
+                     title_y=8, start_y=70, margin=14)
+speech(im, ['别抢啦，', '我把时间', '都排好了。'], (1270, 155), (1190, 520), 27)
+num(im, 5)
+reading_changed += save_png_if_changed(im, OUT/'page-05.png')
 pages.append(im)
 
-im = user_final_page('06', (W, H))
-im.save(OUT/'page-06.png')
+im = scene('shot-06.png')
+schedule_card(im, (585, 270, 910, 700),
+              ['1. 陪姐姐玩', '2. 陪妹妹玩', '3. 陪小满玩', '4. 睡觉休息'],
+              title_size=29, row_size=25, row_step=68, margin=25)
+# 母亲面向纸张，纸面补充项倒置于观看方向，完整可读的第四项也保留在上方日程卡。
+perspective_schedule(im, '星野的日程表',
+                     ['1. 陪姐姐玩', '2. 陪妹妹玩', '3. 陪小满玩', '4. 睡觉休息'],
+                     ((825, 1285), (740, 1285), (740, 1230), (825, 1230)),
+                     (300, 220), title_size=25, row_size=22, row_step=38,
+                     title_y=5, start_y=42, margin=8)
+speech(im, ['我也有自己的', '行程啊？'], (300, 150), (450, 420), 27)
+speech(im, ['安排得挺好，', '不过得先把他', '休息的时间排上。'], (1080, 150), (1050, 520), 27)
+num(im, 6)
+reading_changed += save_png_if_changed(im, OUT/'page-06.png')
 pages.append(im)
 
 im = scene('shot-07.png')
 caption(im, '妈妈转述', ['你哥哥跟你说，项目结束就好，', '早点休息，别熬夜。'], (55, 55), 27)
-speech(im, ['小叔，等你休息好了，', '再陪我讲故事嘛。'], (220, 835), (390, 1070), 27)
+speech(im, ['小叔，等你休息好了，', '再陪我讲故事嘛。'], (300, 1510), (930, 1290), 27)
 d = ImageDraw.Draw(im)
 d.rounded_rectangle((50, 1795, 585, 1870), radius=18, fill=INK)
 d.text((75, 1815), '二弟被预约的第一天，正式开始。', font=ft(22), fill=YELLOW)
 num(im, 7)
-im.save(OUT/'page-07.png')
+reading_changed += save_png_if_changed(im, OUT/'page-07.png')
 pages.append(im)
 
-save_lossless_pdf_from_paths(sorted(OUT.glob('page-*.png')), ROOT/'deliverables/第一话_V4_精细化重制.pdf', resolution=150)
-vertical_pages = []
-for source_path in sorted(OUT.glob('page-*.png')):
-    source = Image.open(source_path).convert('RGB')
-    assert source.size == (W, H), f'Unexpected approved page size: {source_path}: {source.size}'
-    if source_path.name == 'page-06.png':
-        vertical = user_final_page('06', VERTICAL_SIZE)
-    else:
-        vertical = Image.new('RGB', VERTICAL_SIZE, PAPER)
-        vertical.paste(source, (0, (VERTICAL_SIZE[1]-H)//2))
-    vertical.save(VERTICAL_OUT/source_path.name)
-    vertical_pages.append(vertical)
-save_lossless_pdf_from_paths(sorted(VERTICAL_OUT.glob('page-*.png')), ROOT/'deliverables/第一话_竖屏全页漫画.pdf', resolution=150)
-print('Built chapter 1 with measured elliptical speech balloons:', len(pages), 'pages')
-print('Built reference-ratio vertical edition:', len(vertical_pages), 'pages', VERTICAL_SIZE)
+# 指定固定页序，不将旧草稿目录中额外的 PNG 意外打包。
+names = ['page-00-cover.png'] + [f'page-{i:02d}.png' for i in range(1, 8)]
+reading_paths = [OUT / name for name in names]
+vertical_paths = [VERTICAL_OUT / name for name in names]
+vertical_changed = 0
+for source_path, dest_path in zip(reading_paths, vertical_paths):
+    with Image.open(source_path) as page:
+        source = page.convert('RGB')
+    assert source.size == (W, H), f'Unexpected draft page size: {source_path}: {source.size}'
+    vertical = Image.new('RGB', VERTICAL_SIZE, PAPER)
+    vertical.paste(source, (0, (VERTICAL_SIZE[1]-H)//2))
+    vertical_changed += save_png_if_changed(vertical, dest_path)
+
+cache_path = DRAFT / '.pdf-cache.json'
+try:
+    previous = json.loads(cache_path.read_text(encoding='utf-8'))
+except (FileNotFoundError, ValueError):
+    previous = {}
+cache = {}
+cache['reading'], reading_pdf_changed = ensure_draft_pdf(
+    reading_paths, DRAFT/'chapter-01-draft-reading.pdf', previous.get('reading', {}))
+cache['vertical'], vertical_pdf_changed = ensure_draft_pdf(
+    vertical_paths, DRAFT/'chapter-01-draft-vertical.pdf', previous.get('vertical', {}))
+cache_tmp = cache_path.with_name(cache_path.name + '.tmp')
+try:
+    cache_tmp.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding='utf-8')
+    cache_tmp.replace(cache_path)
+finally:
+    cache_tmp.unlink(missing_ok=True)
+print(f'UNAPPROVED DRAFT chapter 1: {len(pages)} pages; PNG changed: {reading_changed} reading / {vertical_changed} vertical; PDF rebuilt: {reading_pdf_changed} / {vertical_pdf_changed}')
