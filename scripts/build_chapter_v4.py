@@ -259,7 +259,7 @@ reading_changed += save_png_if_changed(im, OUT/'page-06.png')
 pages.append(im)
 
 im = scene('shot-07.png')
-caption(im, '妈妈转述', ['你哥哥跟你说，项目结束就好，', '早点休息，别熬夜。'],
+caption(im, '妈妈：' if REVIEW else '妈妈转述', ['你哥哥跟你说，项目结束就好，', '早点休息，别熬夜。'],
         (55, 12) if REVIEW else (55, 55), 22 if REVIEW else 27)
 speech(im, ['小叔，等你休息好了，', '再陪我讲故事嘛。'],
        (1150, 880) if REVIEW else (300, 1510), (1060, 1160) if REVIEW else (930, 1290), 27)
