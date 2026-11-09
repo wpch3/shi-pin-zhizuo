@@ -26,3 +26,13 @@
 2. [Frank & Ollie：Physical Animation](https://www.frankanollie.com/PhysicalAnimation.html) 强调清晰的动作呈现和服务于故事的表演；[Animation Mentor：Emotion Through Body Language](https://www.animationmentor.com/blog/tutorial-animating-emotion-through-body-language/) 提醒结合肩、躯干与重心；[RMCAD：Animating Emotions](https://www.rmcad.edu/blog/animating-emotions-capturing-subtle-expressions-and-body-language/) 强调脸与身体共同传达情绪。这些只是方法参考，不替代本作分镜和用户要求。
 3. 原版带图作为参考时，新试画明显复制了旧构图、圆眼或较粗线条，说明“提示词说身份优先”本身不足以防止视觉污染。后续应试着将动作拆成文字／简化示意并以官方图主导身份，而不是盲目反复局部补丁。
 4. 最终须在完整阅读页与竖屏页逐页检查对白、气泡尾巴、页码、清晰度、肢体与跨页连续性。工具、脚本或助手目检均不等于用户验收。
+
+## 下一轮候选与局部复看（继续工作中）
+
+- 01 `shot-01-expression-study.png`：不附旧脸，恢复张口开心和下楼动作，但放大看眼睛仍偏圆、与官方细长眼存在差异；试排可容纳对白，不采纳，需继续保证身份与情绪同时成立。
+- 02 `shot-02-pose-study.png`：恢复靠肩、双手挽臂、哥哥温柔带羞；上方手的袖口可见，但袖管部分被身体遮挡，来源与两手抓抱关系仍需谨慎核对。整页试排没有压脸，但页码在裤子边缘对比不足；只列为有希望的未验收候选，未写入源画。
+- 03 `pose-guide-03.png` 是仅含身体关系的简化动作参考，不是成品；`shot-03-pose-study.png` 用该示意加官方人设生成。新图有亲昵接触和哥哥害羞，但姐姐一手似抓在自己的袖口附近、上方袖臂遮挡难追，妹妹仅见一只手，动势较旧版弱；顶部横向装饰线也须按画幅规则判读。不能作为合格页。
+- 04 `shot-04-pose-study.png` 虽恢复拿积木与指人，但牵手放大后手指交叠、归属不清，弃用；`shot-04-simple-touch.png` 将积木画成书，妹妹指向不明确，交握仍不清，弃用。不能解释混乱的指节为合理透视。
+- 07 `shot-07-pose-study.png` 把小满画成两人，整张弃用；`shot-07-three-people.png` 三个人、姐姐盖毯、小满跪地举书均出现，放大看到树下有一条似文字线／地线，书朝向及男主手袖仍需核对；一次试排时气泡压到男主头部，不能采用该气泡位置。候选还需跨页发饰、造型、文案、气泡与页码复核，未写入源画。
+
+本轮仅做局部试排，未执行正式版构建或全话验收。所有新图都保存在 `art/candidates-face-review/chapter-01/`，不代表已获用户认可。
