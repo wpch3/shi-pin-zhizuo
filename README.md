@@ -1,6 +1,6 @@
 # 《二弟的休息日被全家预约了》漫画制作
 
-> **制作中**：第一话全8页重绘仍为候选；p03 交互肢体及画幅尚待解决，p04 新候选与 p05/p06 文字、p07 气泡及颜色等尚需全页复核。本目录第一话正式 PDF/页面仍为旧版本，勿把新源画视作已验收成品。`scripts/build_chapter_v4.py --draft` 只输出隔离试排。第二话 p06 与第三话 p09/p10 有未采纳候选，第二话实际并轨未完成；第三话 p08 不动。旧定稿文件及哈希保留，详细状态见 `docs/错误复盘与优化方案长期记录.md` 第廿九、三十节。
+> **制作中**：第一话全8页重绘仍为候选；p03 交互肢体及画幅尚待解决，p04 新候选与 p05/p06 文字、p07 气泡及颜色等尚需全页复核。本目录第一话正式 PDF/页面仍为旧版本，勿把新源画视作已验收成品。`scripts/build_chapter_v4.py --draft` 与 `scripts/build_chapter02_v4.py --draft` 只输出隔离试排；第二话草稿目前仍是原画原色，不代表已并轨。第二话 p06 与第三话 p09/p10 有未采纳候选，第二话实际并轨未完成；第三话 p08 不动。旧定稿文件及哈希保留，详细状态见 `docs/错误复盘与优化方案长期记录.md` 第廿九、三十节。
 
 > **每次制作、修改、检查与交付前必读：`AGENTS.md`、`PROJECT_MEMORY.md`、`docs/错误复盘与优化方案长期记录.md`。必须逐页用眼睛观察实际成图并结合剧情与构图思考；脚本、尺寸、页数和几何检查通过不等于完成。**V4封面与7页正片均已重新独立绘制，不调用旧正片、不把人设立绘当剧情图，也不以“原图加方框”冒充优化。V3第一话保留作退回版本记录。
 
@@ -29,7 +29,7 @@
 - `art/chapter-03-v6/`：上一轮12页原画，保留作历史对照，不再进构建（其中第8页含三只手／三把勺错误，见长期记录第十六节）。
 - `art/chapter-03-v5/`：10页版原画，保留作历史对照，不再进构建。
 - `art/chapter-03-v4/`：返修前原画，保留作缺陷证据，**不再进构建**；`outfits/` 为家居服/外出服设定，不得直接冒充封面或正片。
-- `scripts/build_chapter_v4.py`：按每页原生构图和留白定制排版的构建脚本；第一话PDF已改用无损PNG/Flate导出。
+- `scripts/build_chapter_v4.py`：按每页原生构图和留白定制排版；隔离草稿 PDF 使用无损 PNG/Flate，旧正式交付保留。
 - `scripts/build_chapter03_v4.py`：第三话构建入口（读 `art/chapter-03-v7/`，12页，页码 `NN / 11`）；`scene()` 用 `ImageOps.fit` 保证四边铺满不贴纸底，页码按背景亮度自动反色描边；缺少已审查原画时明确失败，禁止占位图冒充正片。
 - `scripts/audit_page_canvas.py`：画面级预筛（黑边、画内框线、纯纸空白带、纸色外边距、画风与线宽漂移），支持 `--anchor` 画风锚点与 `canvas-review.json` 人眼复核台账；只做预筛，不拥有验收权。
 - `scripts/export_lightweight_preview.py`：生成逐页看图页、PNG图片版ZIP、轻量预览PDF；`scripts/verify_chapter03_pdf.py`：校验两份无损PDF、轻量PDF、ZIP字节一致、看图页链接。
@@ -67,8 +67,9 @@
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/python scripts/build_chapter_v4.py
-.venv/bin/python scripts/build_chapter02_v4.py
+# 第一、二话尚未验收；只输出到 deliverables/drafts/，不会覆盖旧正式成品
+.venv/bin/python scripts/build_chapter_v4.py --draft
+.venv/bin/python scripts/build_chapter02_v4.py --draft
 .venv/bin/python scripts/build_chapter03_v4.py
 # 如需重建七人正式人设卡，再运行：
 .venv/bin/python scripts/build_full_v3.py

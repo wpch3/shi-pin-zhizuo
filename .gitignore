@@ -7,3 +7,6 @@ deliverables/.build-cache.json
 deliverables/.lightweight-cache.json
 deliverables/.chapter04-build-cache.json
 deliverables/.chapter04-lightweight-cache.json
+
+# 未验收试排，可由脚本重新生成；不得误作正式交付
+deliverables/drafts/
