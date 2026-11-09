@@ -10,9 +10,10 @@ from draft_output import save_png_if_changed, ensure_draft_pdf
 
 ROOT = Path(__file__).resolve().parents[1]
 # 当前重绘尚未验收；避免误覆盖旧正式交付。
-if sys.argv[1:] != ['--draft']:
-    raise SystemExit('第一话重绘仍在制作中；仅可用 --draft 生成隔离试排，禁止覆盖正式交付。')
-DRAFT = ROOT / 'deliverables/drafts/chapter-01'
+if sys.argv[1:] not in (['--draft'], ['--draft', '--review']):
+    raise SystemExit('第一话重绘仍在制作中；仅可用 --draft [--review] 生成隔离试排，禁止覆盖正式交付。')
+REVIEW = sys.argv[1:] == ['--draft', '--review']
+DRAFT = ROOT / ('deliverables/drafts/chapter-01-review' if REVIEW else 'deliverables/drafts/chapter-01')
 W, H = 1440, 1920
 SRC = ROOT / 'art/chapter-01-v4'
 OUT = DRAFT / 'reading'
@@ -33,7 +34,18 @@ def ft(n):
 
 
 def scene(name):
-    return Image.open(SRC / name).convert('RGB').resize((W, H), Image.Resampling.LANCZOS)
+    # 用户看图用候选：不覆盖当前源或正式交付；其余页仍从当前未验收源取图。
+    review_scenes = {
+        'shot-01.png': 'shot-01-two-legs.png',
+        'shot-02.png': 'shot-02-pose-study.png',
+        'shot-03.png': 'shot-03-family-embrace.png',
+        'shot-04.png': 'shot-04-acting-original.png',
+        'shot-07.png': 'shot-07-lap-pillow-blanket.png',
+    }
+    path = (ROOT / 'art/candidates-face-review/chapter-01' / review_scenes[name]
+            if REVIEW and name in review_scenes else SRC / name)
+    with Image.open(path) as source:
+        return source.convert('RGB').resize((W, H), Image.Resampling.LANCZOS)
 
 
 USER_FINAL = ROOT / 'art/user-final/chapter-01'
@@ -124,7 +136,9 @@ def caption(im, title, lines, xy, size=27):
 def num(im, n=None):
     d = ImageDraw.Draw(im)
     s = 'COVER' if n is None else f'{n:02d} / 07'
-    d.text((1250, 1855), s, font=ft(18), fill=MUTED)
+    xy = (50, 1855) if REVIEW and n in (4, 7) else (1250, 1855)
+    d.text(xy, s, font=ft(18), fill=INK if REVIEW else MUTED,
+           stroke_width=2 if REVIEW else 0, stroke_fill=PAPER)
 
 
 def unify_schedule_paper(im, quad, delta=(-5, -11, -25)):
@@ -206,8 +220,8 @@ reading_changed += save_png_if_changed(im, OUT/'page-03.png')
 pages.append(im)
 
 im = scene('shot-04.png')
-speech(im, ['小满，', '连你也来抢呀？'], (1130, 200), (1176, 624), 28)
-speech(im, ['小叔先陪我', '搭城堡啦。'], (200, 680), (368, 912), 28)
+speech(im, ['小满，', '连你也来抢呀？'], (1130, 155 if REVIEW else 200), (1176, 624), 28)
+speech(im, ['小叔先陪我', '搭城堡啦。'], (200, 500 if REVIEW else 680), (368, 720 if REVIEW else 912), 28)
 num(im, 4)
 reading_changed += save_png_if_changed(im, OUT/'page-04.png')
 pages.append(im)
@@ -245,11 +259,17 @@ reading_changed += save_png_if_changed(im, OUT/'page-06.png')
 pages.append(im)
 
 im = scene('shot-07.png')
-caption(im, '妈妈转述', ['你哥哥跟你说，项目结束就好，', '早点休息，别熬夜。'], (55, 55), 27)
-speech(im, ['小叔，等你休息好了，', '再陪我讲故事嘛。'], (300, 1510), (930, 1290), 27)
+caption(im, '妈妈转述', ['你哥哥跟你说，项目结束就好，', '早点休息，别熬夜。'],
+        (55, 12) if REVIEW else (55, 55), 22 if REVIEW else 27)
+speech(im, ['小叔，等你休息好了，', '再陪我讲故事嘛。'],
+       (1150, 880) if REVIEW else (300, 1510), (1060, 1160) if REVIEW else (930, 1290), 27)
 d = ImageDraw.Draw(im)
-d.rounded_rectangle((50, 1795, 585, 1870), radius=18, fill=INK)
-d.text((75, 1815), '二弟被预约的第一天，正式开始。', font=ft(22), fill=YELLOW)
+if REVIEW:
+    d.rounded_rectangle((850, 55, 1385, 130), radius=18, fill=INK)
+    d.text((875, 75), '二弟被预约的第一天，正式开始。', font=ft(22), fill=YELLOW)
+else:
+    d.rounded_rectangle((50, 1795, 585, 1870), radius=18, fill=INK)
+    d.text((75, 1815), '二弟被预约的第一天，正式开始。', font=ft(22), fill=YELLOW)
 num(im, 7)
 reading_changed += save_png_if_changed(im, OUT/'page-07.png')
 pages.append(im)
