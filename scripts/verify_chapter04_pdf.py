@@ -11,6 +11,7 @@
 用法：.venv/bin/python scripts/verify_chapter04_pdf.py
 """
 from pathlib import Path
+import tempfile
 import zipfile
 
 import numpy as np
@@ -68,7 +69,9 @@ def check_preview():
             filters.add(doc.xref_get_key(info[0], 'Filter')[1])
     assert filters == {'/DCTDecode'}, f'轻量预览过滤器异常: {filters}'
     pix = doc[4].get_pixmap(dpi=150, alpha=False)
-    Image.frombytes('RGB', (pix.width, pix.height), pix.samples).save('/tmp/rev7/ch4-light-preview-page04.png')
+    preview_dir = Path(tempfile.gettempdir()) / 'shi-pin-zhizuo-preview'
+    preview_dir.mkdir(parents=True, exist_ok=True)
+    Image.frombytes('RGB', (pix.width, pix.height), pix.samples).save(preview_dir / 'ch4-light-preview-page04.png')
     doc.close()
     print(f'[OK] {PREVIEW.name}: {N}页, 691.2x921.6pt, DCTDecode(JPEG q=88), '
           f'{PREVIEW.stat().st_size/1024/1024:.2f}MB, 已导出第4页供放大目检')

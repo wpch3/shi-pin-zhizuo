@@ -10,6 +10,7 @@
 """
 from pathlib import Path
 import hashlib
+import tempfile
 import zipfile
 
 import numpy as np
@@ -69,7 +70,9 @@ def check_preview():
     assert filters == {'/DCTDecode'}, f'轻量预览过滤器异常: {filters}'
     # 渲染回读一页供人眼放大复检（JPEG 有损，只查可读性与页数，不查像素相等）
     pix = doc[4].get_pixmap(dpi=150, alpha=False)
-    Image.frombytes('RGB', (pix.width, pix.height), pix.samples).save('/tmp/rev7/light-preview-page04.png')
+    preview_dir = Path(tempfile.gettempdir()) / 'shi-pin-zhizuo-preview'
+    preview_dir.mkdir(parents=True, exist_ok=True)
+    Image.frombytes('RGB', (pix.width, pix.height), pix.samples).save(preview_dir / 'light-preview-page04.png')
     doc.close()
     print(f'[OK] {PREVIEW.name}: 12页, 691.2x921.6pt, DCTDecode(JPEG q=88), '
           f'{PREVIEW.stat().st_size/1024/1024:.2f}MB, 已导出第4页供放大目检')
