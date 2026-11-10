@@ -249,8 +249,15 @@ def main():
                       f'warm={z[3]:.1f} stroke={z[4]:.1f} MAD')
         if not warned:
             print('（无显著漂移疑点）')
-        if anchor and anchor in vectors:
-            base = vectors[anchor]
+        if anchor:
+            if anchor in vectors:
+                base = vectors[anchor]
+            else:
+                anchor_path = Path(anchor)
+                if not anchor_path.is_file():
+                    raise FileNotFoundError(f'画风锚点不存在: {anchor}')
+                _, anchor_array = _load(anchor_path)
+                base = style_vector(anchor_array)
             print(f'\n=== 相对画风锚点 {anchor} 的线宽比（>{STROKE_RATIO_WARN} 需人眼确认）===')
             print(f'锚点线宽代理 = {base[4]:.2f}px')
             for n in names:
