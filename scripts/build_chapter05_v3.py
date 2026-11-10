@@ -1,4 +1,4 @@
-"""第五话独立检查草稿；不写正式版。封面标题未裁定，故不写入。"""
+"""第五话独立检查草稿；不写正式版。水族馆标题已裁定，话数待确认。"""
 from pathlib import Path
 import sys
 from PIL import Image, ImageDraw, ImageFont
@@ -38,6 +38,7 @@ def save(im, num):
     save_png_if_changed(im, OUT / ('page-00-cover.png' if num == 0 else f'page-{num:02}.png'))
 
 im = scene('cover.png')
+ImageDraw.Draw(im).text((38, 28), '今天一起去水族馆', font=ImageFont.truetype(str(FONT), 66), fill='#E9BD4F', stroke_width=4, stroke_fill='#292B2C')
 save(im, 0)
 
 im = scene('shot-01.png')
