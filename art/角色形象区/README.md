@@ -6,3 +6,5 @@
 - 原始人设参考： [二弟](../character-v3/second-brother.png) · [姐姐](../character-v3/older-sister.png) · [妹妹](../character-v3/younger-sister.png) · [小满](../character-v3/niece.png)
 
 以后新增可用形象以人物及版本分明地收录于本区，保留图源及认可状态。连续剧情段的服装、发型与发饰保持一致；跨段换装须有自然过渡。
+
+- [新人物用户原图与关系说明（预案，未正式入正文）](新人物_用户预案/README.md)
