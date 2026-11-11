@@ -71,6 +71,9 @@ def main():
         latest = ['PDF完整版/第七话_试排v5_完整版.pdf', 'PDF轻量版/第七话_试排v5_轻量版.pdf', 'Markdown完整版/第七话_试排v5_完整版.md']
         if all((COLLECTION/p).is_file() for p in latest):
             index.append(f'| 第七话（反馈返修试排v5） | [完整版]({latest[0]}) | [轻量版]({latest[1]}) | [完整版]({latest[2]}) | 本轮反馈返修，待用户确认；完整版无损。 |')
+        v6 = ['PDF完整版/第七话_试排v6_完整版.pdf', 'PDF轻量版/第七话_试排v6_轻量版.pdf', 'Markdown完整版/第七话_试排v6_完整版.md']
+        if all((COLLECTION/p).is_file() for p in v6):
+            index.append(f'| 第七话（用户台词试排v6） | [完整版]({v6[0]}) | [轻量版]({v6[1]}) | [完整版]({v6[2]}) | 第07页采用用户原句，其余沿用v5；全话待确认，完整版无损。 |')
         index += ['', '后续新话完成后也按三个文件区分别存放；按版本状态区分候选和已确认成果，不覆盖旧版。']
         (COLLECTION/'README.md').write_text('\n'.join(index)+'\n',encoding='utf-8')
 if __name__=='__main__': main()
