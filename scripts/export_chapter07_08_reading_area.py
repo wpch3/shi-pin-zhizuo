@@ -21,9 +21,9 @@ sys.path.insert(0, str(ROOT / 'scripts'))
 from pdf_export import save_lossless_pdf_from_paths
 
 ITEMS = (
-    ('第七话', D / 'review-chapter-07-user-feedback-v7/第七话_返修试排.md', 8,
-     D / 'review-chapter-07-user-feedback-v7/第七话_返修完整版.pdf',
-     D / 'review-chapter-07-user-feedback-v7/第七话_返修轻量试排.pdf',
+    ('第七话', D / '章节/第七话/review-chapter-07-user-feedback-v7/第七话_返修试排.md', 8,
+     D / '章节/第七话/review-chapter-07-user-feedback-v7/第七话_返修完整版.pdf',
+     D / '章节/第七话/review-chapter-07-user-feedback-v7/第七话_返修轻量试排.pdf',
      '用户整体确认 v7；封面《一起做晚饭》，第03页为本版，其他正文沿用 v6。'),
     ('第八话', D / 'review-chapter-08-reset-v11/第八话_气泡位置修订预览.md', 19,
      None, D / 'review-chapter-08-reset-v11/第八话_气泡位置修订预览.pdf',

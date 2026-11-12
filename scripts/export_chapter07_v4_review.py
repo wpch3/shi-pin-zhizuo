@@ -3,7 +3,7 @@ from pathlib import Path
 import os,re,shutil
 import pymupdf
 from PIL import Image, ImageChops
-root=Path(__file__).resolve().parents[1]; collection=root/'deliverables/分格式阅读区'; source=root/'deliverables/review-chapter-07-continuity-v4'; md=source/'第七话_连贯性试排.md'
+root=Path(__file__).resolve().parents[1]; collection=root/'deliverables/分格式阅读区'; source=root/'deliverables/章节/第七话/review-chapter-07-continuity-v4'; md=source/'第七话_连贯性试排.md'
 paths=[(md.parent/p).resolve() for p in re.findall(r'!\[[^]]*\]\(([^)]+)\)',md.read_text())]
 if len(paths)!=8 or not all(p.is_file() for p in paths): raise ValueError('第七话页数/图源异常')
 full=collection/'PDF完整版/第七话_试排v4_完整版.pdf'; light=collection/'PDF轻量版/第七话_试排v4_轻量版.pdf'; gallery=collection/'Markdown完整版/第七话_试排v4_完整版.md'

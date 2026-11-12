@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw, ImageFont
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('仅允许 --draft')
-r=Path(__file__).resolve().parents[1]; out=r/'deliverables/review-chapter-07-continuity-v3'; out.mkdir(parents=True,exist_ok=True)
+r=Path(__file__).resolve().parents[1]; out=r/'deliverables/章节/第七话/review-chapter-07-continuity-v3'; out.mkdir(parents=True,exist_ok=True)
 font=r/'assets/fonts/NotoSansCJKsc-Bold.otf'; W,H=1440,1920
 with Image.open(r/'art/chapter-07-cooking-v6/shot-07.png') as src:
  if src.size!=(896,1200):raise ValueError(src.size)
@@ -29,7 +29,7 @@ f=ImageFont.truetype(str(font),27); center=(1110,145);lay=measure_speech_text(d,
 for x,y,line in lay['positions']: d.text((x,y),line,font=f,fill='#292B2C')
 d.text((1260,1855),'07 / 07',font=ImageFont.truetype(str(font),20),fill='#292B2C',stroke_width=2,stroke_fill='#F8F4EB')
 (out/'pages').mkdir(exist_ok=True); im.save(out/'pages/page-07.png',optimize=True)
-paths=[r/'deliverables/review-chapter-07-dialogue-draft/pages'/('page-00-cover.png' if i==0 else f'page-{i:02}.png') for i in range(7)]+[out/'pages/page-07.png']
+paths=[r/'deliverables/章节/第七话/review-chapter-07-dialogue-draft/pages'/('page-00-cover.png' if i==0 else f'page-{i:02}.png') for i in range(7)]+[out/'pages/page-07.png']
 lines=['# 第七话｜连贯性返修试排 v3（未验收）','','> 仅更换第07页：新生图与第06页厨房、微波炉和餐食尽量对齐；对白和纸条是未审定提案。其他页沿用此前试排，封面标题未定。增加纸条文字放大提示框（原文仍是提案），03读序、05标注、06纸条时序及全话细节仍待复核。','']
 pdf=pymupdf.open()
 for i,p in enumerate(paths):

@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw, ImageFont
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('仅允许 --draft')
-r=Path(__file__).resolve().parents[1]; out=r/'deliverables/review-chapter-07-user-feedback-v5'; out.mkdir(parents=True,exist_ok=True)
+r=Path(__file__).resolve().parents[1]; out=r/'deliverables/章节/第七话/review-chapter-07-user-feedback-v5'; out.mkdir(parents=True,exist_ok=True)
 font=r/'assets/fonts/NotoSansCJKsc-Bold.otf'; W,H=1440,1920
 with Image.open(r/'art/chapter-07-cooking-v6/shot-07.png') as src:
  if src.size!=(896,1200):raise ValueError(src.size)
@@ -50,7 +50,7 @@ add_speech_page(5,'art/chapter-07-user-repair/shot-05-v1.png',[
 add_speech_page(6,'art/chapter-07-user-repair/shot-06-v5.png',[
  (['给妈妈留一份。'],(220,130),(450,310)),
  (['我再写张纸条。'],(1140,130),(1080,440))])
-paths=[r/'deliverables/review-chapter-07-dialogue-draft/pages'/('page-00-cover.png' if i==0 else f'page-{i:02}.png') for i in range(5)]+[out/'pages/page-05.png',out/'pages/page-06.png',out/'pages/page-07.png']
+paths=[r/'deliverables/章节/第七话/review-chapter-07-dialogue-draft/pages'/('page-00-cover.png' if i==0 else f'page-{i:02}.png') for i in range(5)]+[out/'pages/page-05.png',out/'pages/page-06.png',out/'pages/page-07.png']
 lines=['# 第七话｜用户反馈返修试排 v5（待复核）','','> 05重生画面，小满直接说话；06重生画面尝试对齐画风色彩；07保留原画，妈妈的候选对白改成第一人称。其余页面沿用v4；对白和纸条为提案，封面标题未定，未覆盖旧版本。','']
 pdf=pymupdf.open()
 for i,p in enumerate(paths):

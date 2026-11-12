@@ -7,10 +7,10 @@ from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('仅允许 --draft')
 r=Path(__file__).resolve().parents[1]
-out=r/'deliverables/review-chapter-07-user-feedback-v7'; pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
+out=r/'deliverables/章节/第七话/review-chapter-07-user-feedback-v7'; pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
 font=r/'assets/fonts/NotoSansCJKsc-Bold.otf'; W,H=1440,1920
 # Add a separate title band instead of covering the existing cover artwork.
-cover=Image.open(r/'deliverables/review-chapter-07-dialogue-draft/pages/page-00-cover.png').convert('RGB')
+cover=Image.open(r/'deliverables/章节/第七话/review-chapter-07-dialogue-draft/pages/page-00-cover.png').convert('RGB')
 coverout=Image.new('RGB',(W,H+170),'#f9f3e8');coverout.paste(cover,(0,170));d=ImageDraw.Draw(coverout)
 f=ImageFont.truetype(str(font),68)
 d.text((W//2,78),'一起做晚饭',font=f,fill='#604a3e',anchor='mm')
@@ -27,7 +27,7 @@ for lines,center,target in [(['我来摆餐具！'],(1090,125),(1000,650)),(['�
  for x,y,line in lay['positions']: d.text((x,y),line,font=f,fill='#292B2C')
 d.text((1260,1855),'03 / 07',font=ImageFont.truetype(str(font),20),fill='#292B2C',stroke_width=2,stroke_fill='#F8F4EB')
 im.save(pages/'page-03.png',optimize=True)
-old=r/'deliverables/review-chapter-07-user-feedback-v6/第七话_返修试排.md'
+old=r/'deliverables/章节/第七话/review-chapter-07-user-feedback-v6/第七话_返修试排.md'
 oldpaths=[(old.parent/p).resolve() for p in re.findall(r'!\[[^]]*\]\(([^)]+)\)',old.read_text())]
 assert len(oldpaths)==8
 paths=oldpaths.copy();paths[0]=pages/'page-00-cover.png';paths[3]=pages/'page-03.png'

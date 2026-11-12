@@ -5,7 +5,7 @@ from PIL import Image,ImageDraw,ImageFont
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('仅允许 --draft')
-root=Path(__file__).resolve().parents[1];out=root/'deliverables/review-chapter-07-dialogue-draft';pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
+root=Path(__file__).resolve().parents[1];out=root/'deliverables/章节/第七话/review-chapter-07-dialogue-draft';pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
 font=root/'assets/fonts/NotoSansCJKsc-Bold.otf'; W,H=1440,1920
 src=['art/chapter-07-cooking-v2/cover.png','art/chapter-07-cooking-v1/shot-01.png','art/chapter-07-cooking-v2/shot-02.png','art/chapter-07-cooking-v5/shot-03.png','art/chapter-07-cooking-v4/shot-04-v2.png','art/chapter-07-cooking-v4/shot-05-v2.png','art/chapter-07-cooking-v5/shot-06.png','art/chapter-07-cooking-v5/shot-07.png']
 # 对白均为制作提案，不是用户锁定对白。
