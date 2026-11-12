@@ -44,6 +44,10 @@ def make_pdf(paths, dest, title, light):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--lossless-to',type=Path);args=parser.parse_args()
+    # This historical exporter rebuilds the index for chapters 1–6 and old 7th
+    # drafts. Refuse before touching files when the current 7th/8th index exists.
+    if not args.lossless_to and (COLLECTION/'Markdown完整版/第七话_完整版.md').exists():
+        raise SystemExit('旧版1—6话导出器会覆盖新版阅读区索引，已安全停止；请使用现有阅读区索引，或用 export_chapter07_08_reading_area.py 单独重建7—8话。')
     for folder in ('PDF完整版','PDF轻量版','Markdown完整版'): (COLLECTION/folder).mkdir(parents=True,exist_ok=True)
     index=['# 分格式阅读区','','三个文件区各按话数命名；历史制作文件及 PNG 母版保留原处，未迁移或覆盖。','','- 第一至六话的PDF完整版：原尺寸 JPEG q96、4:4:4；不是无损，请从 Markdown 中的原PNG查看无损细节。','- PDF轻量版：不超过720×960（保持比例），JPEG q90、4:4:4，方便预览。','- Markdown完整版：全话封面和正文逐页内嵌原尺寸 PNG；须保留本仓库相对路径。','- 为控制 Git 交付体积，完整版PDF亦经高质量 JPEG 编码；可用脚本 `--lossless-to 目录` 从相同PNG生成 PNG/Flate 无损归档 PDF。','','| 话数 | 完整版 PDF | 轻量 PDF | 完整 Markdown | 版本状态 |','| --- | --- | --- | --- | --- |']
     for name,src,count,status in SOURCES:
