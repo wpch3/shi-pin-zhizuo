@@ -108,12 +108,13 @@ pages={
 6:('deliverables/review-chapter-08-reset-v8/typeset/06.png',None),
 7:('deliverables/review-chapter-08-reset-v8/typeset/07.png',None),
 }
-OUT.mkdir(parents=True,exist_ok=True)
-for page,(source,dialogue) in pages.items():
-    with Image.open(ROOT/source) as src: im=src.convert('RGB')
-    if page in (1,2): board(im,page)
-    if page in (3,4): notebook(im,page)
-    if page in (6,7): schedule(im,page)
-    if dialogue is not None: bubbles(im,dialogue)
-    im.save(OUT/f'{page:02}.png',optimize=True)
-    print('typeset',page,im.size)
+if __name__ == "__main__":
+    OUT.mkdir(parents=True,exist_ok=True)
+    for page,(source,dialogue) in pages.items():
+        with Image.open(ROOT/source) as src: im=src.convert('RGB')
+        if page in (1,2): board(im,page)
+        if page in (3,4): notebook(im,page)
+        if page in (6,7): schedule(im,page)
+        if dialogue is not None: bubbles(im,dialogue)
+        im.save(OUT/f'{page:02}.png',optimize=True)
+        print('typeset',page,im.size)
