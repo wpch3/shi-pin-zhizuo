@@ -7,8 +7,8 @@ from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('仅允许 --draft')
 root=Path(__file__).resolve().parents[1]
-old=root/'deliverables/review-chapter-06-aquarium-dialogue/pages'
-out=root/'deliverables/review-chapter-06-aquarium-user-gesture-v16'
+old=root/'deliverables/章节/第六话/review-chapter-06-aquarium-dialogue/pages'
+out=root/'deliverables/章节/第六话/review-chapter-06-aquarium-user-gesture-v16'
 pages_dir=out/'pages';pages_dir.mkdir(parents=True,exist_ok=True)
 font_path=root/'assets/fonts/NotoSansCJKsc-Bold.otf'
 with Image.open(root/'art/chapter-06-aquarium-repair/return-home-v16.png') as image:

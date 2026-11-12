@@ -10,7 +10,7 @@ if sys.argv[1:] != ['--draft']:
     raise SystemExit('仅允许 --draft，保留原检查版')
 root = Path(__file__).resolve().parents[1]
 old = root / 'deliverables/review-chapter-05-v3/pages'
-out = root / 'deliverables/review-chapter-06-aquarium'
+out = root / 'deliverables/章节/第六话/review-chapter-06-aquarium'
 pages_dir = out / 'pages'
 pages_dir.mkdir(parents=True, exist_ok=True)
 with Image.open(old/'page-00-cover.png') as image:

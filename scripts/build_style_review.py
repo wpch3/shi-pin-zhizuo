@@ -123,6 +123,6 @@ for i, rule in enumerate(rules, 1):
     y = wrap(d, rule, (175, y), 1500, font(30), line_gap=14) + 24
 save(im, "04_命名与画风规则.png")
 
-pdf_path = ROOT / "deliverables" / "视觉与命名提案.pdf"
+pdf_path = ROOT / "deliverables" / "历史资料/样张与提案/视觉与命名提案.pdf"
 PAGES[0].save(pdf_path, save_all=True, append_images=PAGES[1:], resolution=150)
 print(pdf_path)

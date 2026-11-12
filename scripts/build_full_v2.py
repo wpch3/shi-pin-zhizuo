@@ -153,7 +153,7 @@ page_num(im,7); im.save(OOUT/"page-07.png"); pages.append(im)
 
 pdf_comic=ROOT/"deliverables/第一话_竖屏全页漫画.pdf"
 pages[0].save(pdf_comic,save_all=True,append_images=pages[1:],resolution=150)
-pages[0].save(ROOT/"deliverables/第一话_V2_完整重制.pdf",save_all=True,append_images=pages[1:],resolution=150)
+pages[0].save(ROOT/"deliverables/章节/第一话/历史散装/第一话_V2_完整重制.pdf",save_all=True,append_images=pages[1:],resolution=150)
 
 # Full character cards with names and complete introductions.
 cards=[]

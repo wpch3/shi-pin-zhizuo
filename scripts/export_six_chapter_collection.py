@@ -19,7 +19,7 @@ SOURCES = [
  ('第三话','review-chapter-03-user-feedback-v2/第三话_用户反馈返修试排.md',12,'用户已确认反馈返修v2，08、10、11为返修版。'),
  ('第四话','第四话_逐页看图.md',10,'现有成品，第一页称呼已改为“小叔”。'),
  ('第五话','review-chapter-05-home-titled/第五话_逐页检查版.md',18,'用户已确认正文与标题。'),
- ('第六话','review-chapter-06-aquarium-user-gesture-v16/第六话_逐页检查版.md',10,'末页双挽动作获用户确认；第03页说话人标注及整话尚未获用户最终确认。'),
+ ('第六话','章节/第六话/review-chapter-06-aquarium-user-gesture-v16/第六话_逐页检查版.md',10,'末页双挽动作获用户确认；第03页说话人标注及整话尚未获用户最终确认。'),
 ]
 
 def pages_from_md(relative,count):

@@ -9,8 +9,8 @@ from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']:
     raise SystemExit('仅允许 --draft')
 root = Path(__file__).resolve().parents[1]
-old = root/'deliverables/review-chapter-06-aquarium/pages'
-out = root/'deliverables/review-chapter-06-aquarium-dialogue'
+old = root/'deliverables/章节/第六话/review-chapter-06-aquarium/pages'
+out = root/'deliverables/章节/第六话/review-chapter-06-aquarium-dialogue'
 pages_dir=out/'pages'; pages_dir.mkdir(parents=True, exist_ok=True)
 font_path=root/'assets/fonts/NotoSansCJKsc-Bold.otf'
 with Image.open(root/'art/chapter-05-aquarium-v2/shot-03.png') as source:

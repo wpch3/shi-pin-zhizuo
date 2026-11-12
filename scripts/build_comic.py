@@ -309,7 +309,7 @@ def build_pages():
         canvas.save(path,optimize=True)
         page_files.append(path)
     images=[Image.open(p).convert("RGB") for p in page_files]
-    images[0].save(OUT/"回家以后_第一话.pdf",save_all=True,append_images=images[1:],resolution=220,quality=92)
+    images[0].save(OUT/"章节/第一话/历史散装/回家以后_第一话.pdf",save_all=True,append_images=images[1:],resolution=220,quality=92)
     return page_files
 
 
