@@ -8,7 +8,10 @@ from speech_text_layout import measure_speech_text
 
 if sys.argv[1:] != ['--draft']: raise SystemExit('Only --draft')
 root=Path(__file__).resolve().parents[1]
-source=root/'art/chapter-08-v1'; out=root/'deliverables/review-chapter-08-v1'; pages=out/'pages'; pages.mkdir(parents=True,exist_ok=True)
+source=root/'art/chapter-08-v1'; out=root/'deliverables/章节/第八话/review-chapter-08-v1'; pages=out/'pages'
+if out.exists() and any(out.iterdir()):
+    raise SystemExit('第八话历史 v1 已有文件；为保护稿件，禁止原地重建。请复制脚本并使用新的输出目录。')
+pages.mkdir(parents=True,exist_ok=True)
 fontpath=root/'assets/fonts/NotoSansCJKsc-Bold.otf'
 font=lambda size: ImageFont.truetype(str(fontpath),size)
 # Ordered left-to-right / top-to-bottom. Explicit named speakers avoid ambiguous tails.
@@ -56,7 +59,7 @@ for i in range(10):
         s=str(i); bb=d.textbbox((0,0),s,font=font(22)); d.text((864-(bb[2]-bb[0])/2,1148),s,font=font(22),fill='#4f5656')
     dest=pages/f'page-{i:02d}.png';im.save(dest,optimize=True);images.append(dest)
 
-md=['# 第八话｜妹妹的学校日常（紧凑初版试排）','','> 封面标题为候选；为先看全话节奏，将v4草案压缩为封面＋9页。画面、对白及衔接均待用户审阅，非定稿。已知事项见复查记录。','', '[人物和剧情来源](../../docs/第八话_妹妹学校日常_剧情草案v4.md) · [四页人物设定](../新人物设定试案v1/逐页看图.md) · [复查记录](../../docs/第八话_初版试排复查.md)','','## 封面','', '![封面](pages/page-00.png)','']
+md=['# 第八话｜妹妹的学校日常（紧凑初版试排）','','> 封面标题为候选；为先看全话节奏，将v4草案压缩为封面＋9页。画面、对白及衔接均待用户审阅，非定稿。已知事项见复查记录。','', '[人物和剧情来源](../../../../docs/第八话_妹妹学校日常_剧情草案v4.md) · [四页人物设定](../../../新人物设定试案v1/逐页看图.md) · [复查记录](../../../../docs/第八话_初版试排复查.md)','','## 封面','', '![封面](pages/page-00.png)','']
 titles=['课堂解题','好友的笔记','学生会开会','一起安排','冷淡拒绝','想念哥哥','放学后','回到家','想了一天的拥抱']
 for i,t in enumerate(titles,1):md.extend([f'## 第{i:02d}页｜{t}','','![第'+str(i)+'页](pages/page-'+f'{i:02d}'+'.png)','',''])
 (out/'逐页看图.md').write_text('\n'.join(md).rstrip()+'\n',encoding='utf8')

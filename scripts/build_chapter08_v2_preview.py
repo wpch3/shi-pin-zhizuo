@@ -8,7 +8,10 @@ from speech_text_layout import measure_speech_text
 
 if sys.argv[1:] not in (['--draft'], ['--draft','--update-04']): raise SystemExit('Use --draft or --draft --update-04')
 update04 = '--update-04' in sys.argv
-r=Path(__file__).resolve().parents[1]; out=r/'deliverables/review-chapter-08-v2'; pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
+r=Path(__file__).resolve().parents[1]; out=r/'deliverables/章节/第八话/review-chapter-08-v2'; pages=out/'pages'
+if out.exists() and any(out.iterdir()):
+    raise SystemExit('第八话历史 v2 已有文件；为保护稿件，禁止原地重建。请复制脚本并使用新的输出目录。')
+pages.mkdir(parents=True,exist_ok=True)
 font=lambda n:ImageFont.truetype(str(r/'assets/fonts/NotoSansCJKsc-Bold.otf'),n)
 plans={
 3:[((210,115),(550,335),['会长：三个社团轮流','使用教室，各十分钟，','十二点十分开始。'],22),((665,115),(760,550),['委员：音乐社要在','十二点半前结束，绘画社','十二点二十后才到。'],21)],
@@ -38,10 +41,10 @@ for i in plans:
     s=str(i);bb=d.textbbox((0,0),s,font=font(22));d.text((864-(bb[2]-bb[0])/2,1148),s,font=font(22),fill='#4f5656')
     im.save(pages/f'page-{i:02d}.png',optimize=True)
 
-old=r/'deliverables/review-chapter-08-v1/pages'
+old=r/'deliverables/章节/第八话/review-chapter-08-v1/pages'
 paths=[(pages if i in plans else old)/f'page-{i:02d}.png' for i in range(11)]
 titles=['封面','课堂解题','好友的笔记','学生会开会','一起安排','冷淡拒绝','想念哥哥','放学后','回到家','想了一天的拥抱','靠在哥哥胸前']
-md=['# 第八话｜妹妹的学校日常（试排 v2）','','> 试排，非定稿。保留四人女生学生会；新增两位成员的区别形象，并加入回家后的亲情场景。标题、台词、形象与连续性仍待用户审阅。','', '[本轮复查](../../docs/第八话_v2_学生会与回家场景复查.md) · [新成员设计](../../art/角色形象区/学生会新成员_试案v1/README.md) · [旧版逐页](../review-chapter-08-v1/逐页看图.md)','']
+md=['# 第八话｜妹妹的学校日常（试排 v2）','','> 试排，非定稿。保留四人女生学生会；新增两位成员的区别形象，并加入回家后的亲情场景。标题、台词、形象与连续性仍待用户审阅。','', '[本轮复查](../../../../docs/第八话_v2_学生会与回家场景复查.md) · [新成员设计](../../../../art/角色形象区/学生会新成员_试案v1/README.md) · [旧版逐页](../review-chapter-08-v1/逐页看图.md)','']
 for i,(p,t) in enumerate(zip(paths,titles)):
     rel=p.relative_to(out) if p.is_relative_to(out) else Path('../review-chapter-08-v1/pages')/p.name
     md += [f'## {"封面" if i==0 else f"第{i:02d}页"}｜{t}','','![第'+str(i)+'页]('+rel.as_posix()+')','']
