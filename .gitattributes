@@ -1,0 +1,2 @@
+# PDFs may contain ASCII-encoded image streams; always treat them as binary.
+*.pdf binary

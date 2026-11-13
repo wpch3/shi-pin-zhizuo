@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parents[1]
 DATA=json.loads((ROOT/'data/characters.json').read_text(encoding='utf-8'))
 FONT=ROOT/'assets/fonts/NotoSansCJKsc-Bold.otf'
 W,H=1440,1920
-OUT=ROOT/'deliverables/full-v3'; COUT=OUT/'characters'; OOUT=OUT/'chapter-01'
+COUT=ROOT/'deliverables/人物资料/历史图源/full-v3'; OOUT=ROOT/'deliverables/章节/第一话/历史图源/full-v3'
 COUT.mkdir(parents=True,exist_ok=True);OOUT.mkdir(parents=True,exist_ok=True)
 PAPER='#F8F4EB'; INK='#292B2C'; RED='#92504C'; YELLOW='#E9BD4F'; MUTED='#746E67'
 
@@ -87,7 +87,7 @@ for i,(heading,dialogue) in enumerate(specs,1):
   d.text((170,1793),'二弟被预约的第一天，正式开始。',font=ft(36),fill=YELLOW)
  page_num(im,i);im.save(OOUT/f'page-{i:02d}.png');pages.append(im)
 
-for name in ['第一话_V3_手绘完整重制.pdf']:
+for name in ['章节/第一话/历史散装/第一话_V3_手绘完整重制.pdf']:
  pages[0].save(ROOT/'deliverables'/name,save_all=True,append_images=pages[1:],resolution=150)
 
 cards=[]
@@ -106,5 +106,5 @@ d.text((50,35),DATA['work_title'],font=ft(60),fill=INK);d.text((55,125),'全员�
 group=Image.open(ROOT/'art/family-v3/group.png').convert('RGB');paste_fit(im,group,(45,190,1350,1650))
 im.save(COUT/'08-family.png');cards.append(im)
 for name in ['完整人设与合照_V3.pdf','完整人设与合照.pdf']:
- cards[0].save(ROOT/'deliverables'/name,save_all=True,append_images=cards[1:],resolution=150)
+ cards[0].save(ROOT/'deliverables/人物资料/人设与合照'/name,save_all=True,append_images=cards[1:],resolution=150)
 print('Built',len(pages),'V3 comic pages and',len(cards),'character/family pages')

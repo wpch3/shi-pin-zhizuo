@@ -1,0 +1,10 @@
+[
+  {"file":"page-00-cover.png","verified":true,"reason":"h@1690：逐坐标查看，是沙发底部与地面的交界，沙发腿及人物腿穿过该线，不是画框。"},
+  {"file":"page-03.png","verified":true,"reason":"h@1598-1601：逐坐标查看，是沙发底边与地面交界，妹妹的腿穿过该线，不是画框。"},
+  {"file":"page-04.png","verified":true,"reason":"h@1598-1601：逐坐标查看，是沙发底边与地面交界，人物腿穿过该线，不是画框。"},
+  {"file":"page-05.png","verified":true,"reason":"h@1598-1599：逐坐标查看，是沙发底边与木地板交界，人物裤腿穿过该线，不是画框。"},
+  {"file":"page-06.png","verified":true,"reason":"h@1598-1601：逐坐标查看，是沙发底边与地面交界，人物腿穿过该线，不是画框。"},
+  {"file":"page-07.png","verified":true,"reason":"h@1855-1857：逐坐标查看，是沙发底边与木地板交界，前景裤腿及页码跨过该线，不是画框。"},
+  {"file":"page-08.png","verified":true,"reason":"h@1631-1633：逐坐标查看，是沙发底边与木地板交界，裤腿与沙发腿打断该线，不是画框。"},
+  {"file":"page-10.png","verified":true,"reason":"h@1598-1600：逐坐标查看，是沙发底边与地面交界，前景裤腿及小满双腿打断该线，不是画框。"}
+]

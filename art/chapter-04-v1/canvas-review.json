@@ -1,0 +1,22 @@
+[
+  {
+    "file": "cover.png",
+    "reason": "v@785-808 为房门木门框与门洞侧边，场景结构，1.5倍放大确认",
+    "verified": true
+  },
+  {
+    "file": "shot-01.png",
+    "reason": "v@48-118 为走廊墙角线与门框立柱，场景结构，1.5倍放大确认",
+    "verified": true
+  },
+  {
+    "file": "shot-02.png",
+    "reason": "h@1153 为地毯边缘与木地板分界线，场景结构，放大确认非空白带",
+    "verified": true
+  },
+  {
+    "file": "shot-04.png",
+    "reason": "v@743 为窗框竖棂与窗外夜色边界，场景结构，1.5倍放大确认",
+    "verified": true
+  }
+]

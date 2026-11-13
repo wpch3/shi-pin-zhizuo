@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "deliverables/style-v2"
+OUT = ROOT / "deliverables/章节/第一话/历史图源/style-v2"
 OUT.mkdir(parents=True, exist_ok=True)
 FONT = ROOT / "assets/fonts/NotoSansCJKsc-Bold.otf"
 W, H = 1440, 1920
@@ -81,7 +81,7 @@ for i, page in enumerate(pages, 1):
     d = ImageDraw.Draw(im) if False else ImageDraw.Draw(page)
     d.text((1280, 1860), f"{i:02d} / 03", font=ft(21), fill="#7B7370")
     page.save(OUT / f"page-{i:02d}.png")
-pages[0].save(ROOT / "deliverables/三页风格样张_V2.pdf", save_all=True, append_images=pages[1:], resolution=150)
+pages[0].save(ROOT / "deliverables/历史资料/样张与提案/三页风格样张_V2.pdf", save_all=True, append_images=pages[1:], resolution=150)
 
 
 def trim_white(im):

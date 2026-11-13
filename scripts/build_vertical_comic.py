@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = json.loads((ROOT / "data/characters.json").read_text(encoding="utf-8"))
 FONT = ROOT / "assets/fonts/NotoSansCJKsc-Regular.otf"
 W, H = 1440, 2560
-OUT_COMIC = ROOT / "deliverables/vertical-chapter-01"
+OUT_COMIC = ROOT / "deliverables/章节/第一话/历史图源/vertical-chapter-01"
 OUT_CARDS = ROOT / "deliverables/complete-character-sheets"
 OUT_COMIC.mkdir(parents=True, exist_ok=True)
 OUT_CARDS.mkdir(parents=True, exist_ok=True)
@@ -261,7 +261,7 @@ for i in range(1, 8):
     page = scene_page(i)
     page.save(OUT_COMIC / f"page-{i:02d}.png")
     comic_pages.append(page)
-comic_pages[0].save(ROOT / "deliverables/第一话_竖屏全页漫画.pdf", save_all=True, append_images=comic_pages[1:], resolution=150)
+comic_pages[0].save(ROOT / "deliverables/章节/第一话/历史散装/第一话_竖屏全页漫画.pdf", save_all=True, append_images=comic_pages[1:], resolution=150)
 
 card_pages = []
 for i, c in enumerate(DATA["characters"], 1):
@@ -271,5 +271,5 @@ for i, c in enumerate(DATA["characters"], 1):
 family = family_card()
 family.save(OUT_CARDS / "08-family.png")
 card_pages.append(family)
-card_pages[0].save(ROOT / "deliverables/完整人设与合照.pdf", save_all=True, append_images=card_pages[1:], resolution=150)
+card_pages[0].save(ROOT / "deliverables/人物资料/人设与合照/完整人设与合照.pdf", save_all=True, append_images=card_pages[1:], resolution=150)
 print("Built", len(comic_pages), "comic pages and", len(card_pages), "character/family pages")
