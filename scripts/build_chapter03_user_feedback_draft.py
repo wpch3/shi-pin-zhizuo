@@ -6,7 +6,7 @@ from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('仅允许 --draft')
 root=Path(__file__).resolve().parents[1]
-out=root/'deliverables/review-chapter-03-user-feedback';pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
+out=root/'deliverables/章节/第三话/review-chapter-03-user-feedback';pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
 font=root/'assets/fonts/NotoSansCJKsc-Bold.otf'
 def page(n,source,dialogues):
  with Image.open(root/source) as src:

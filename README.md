@@ -4,9 +4,9 @@
 
 > **制作中**：第一话检查版已获用户认可，末页按要求将「妈妈转述」改为「妈妈：」；日程表朝向由用户自行处理。旧正式 PDF/页面及用户归档未覆盖。第二话全新重绘v2八页已获用户确认；其确认适用于该检查版，不覆盖旧正式文件；第三话 p08 不动，其他状态见长期记录。
 
-**第二话最新进度**：[全新重绘v2逐页版（用户已确认）](deliverables/review-chapter-02-redraw-v2/逐页看图.md)；[旧原画草稿与历史待修状态](art/chapter-02-redraw/逐页原画草稿.md)。
+**第二话最新进度**：[全新重绘v2逐页版（用户已确认）](deliverables/章节/第二话/review-chapter-02-redraw-v2/逐页看图.md)；[旧原画草稿与历史待修状态](art/chapter-02-redraw/逐页原画草稿.md)。
 
-**历史逐页查看**：[第一话检查版及第二话旧版](deliverables/review-chapters-01-02/逐页看图.md)；[第二话8页试排](deliverables/review-chapter-02-alignment/逐页看图.md)（并轨尚未完成，非定稿）。
+**历史逐页查看**：[第一话检查版及第二话旧版](deliverables/review-chapters-01-02/逐页看图.md)；[第二话8页试排](deliverables/章节/第二话/review-chapter-02-alignment/逐页看图.md)（并轨尚未完成，非定稿）。
 
 > **每次制作、修改、检查与交付前必读：`AGENTS.md`、`PROJECT_MEMORY.md`、`docs/错误复盘与优化方案长期记录.md`。必须逐页用眼睛观察实际成图并结合剧情与构图思考；脚本、尺寸、页数和几何检查通过不等于完成。**V4封面与7页正片均已重新独立绘制，不调用旧正片、不把人设立绘当剧情图，也不以“原图加方框”冒充优化。V3第一话保留作退回版本记录。
 

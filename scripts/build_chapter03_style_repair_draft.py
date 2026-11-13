@@ -5,7 +5,7 @@ from PIL import Image,ImageDraw,ImageFont
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('仅允许 --draft')
-root=Path(__file__).resolve().parents[1];out=root/'deliverables/review-chapter-03-style-repair';pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
+root=Path(__file__).resolve().parents[1];out=root/'deliverables/章节/第三话/review-chapter-03-style-repair';pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
 font=root/'assets/fonts/NotoSansCJKsc-Bold.otf'
 def bubble(im, lines, center, target, size):
  d=ImageDraw.Draw(im);f=ImageFont.truetype(str(font),size);layout=measure_speech_text(d,lines,center,f,size)
