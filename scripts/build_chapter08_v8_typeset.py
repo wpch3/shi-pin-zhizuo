@@ -6,8 +6,8 @@ import sys
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-V7 = ROOT / 'deliverables/review-chapter-08-reset-v7/第八话_整话新版预览.md'
-DEST = ROOT / 'deliverables/review-chapter-08-reset-v8/typeset'
+V7 = ROOT / 'deliverables/章节/第八话/review-chapter-08-reset-v7/第八话_整话新版预览.md'
+DEST = ROOT / 'deliverables/章节/第八话/review-chapter-08-reset-v8/typeset'
 FONT = ROOT / 'assets/fonts/NotoSansCJKsc-Regular.otf'
 BOLD = ROOT / 'assets/fonts/NotoSansCJKsc-Bold.otf'
 old = re.findall(r'!\[[^\]]*\]\(([^)]+)\)', V7.read_text(encoding='utf-8'))

@@ -11,7 +11,7 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parents[1]
-DIR = ROOT / 'deliverables/review-chapter-08-reset-v8'
+DIR = ROOT / 'deliverables/章节/第八话/review-chapter-08-reset-v8'
 markdown = (DIR / '第八话_整话新版_对白试排.md').read_text(encoding='utf-8')
 paths = re.findall(r'!\[[^\]]*\]\(([^)]+)\)', markdown)
 if len(paths) != 19:

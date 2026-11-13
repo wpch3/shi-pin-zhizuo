@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 from fontTools.ttLib import TTFont
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT/'deliverables/review-chapter-08-reset-v9/typeset'
+OUT = ROOT/'deliverables/章节/第八话/review-chapter-08-reset-v9/typeset'
 HAND = ROOT/'assets/fonts/chapter08-handwriting/PatrickHand-Regular.ttf'
 CHINESE = ROOT/'assets/fonts/chapter08-handwriting/MaShanZheng-Regular.ttf'
 FALLBACK = ROOT/'assets/fonts/NotoSansCJKsc-Regular.otf'
@@ -105,8 +105,8 @@ pages={
 2:('art/chapter-08-reset-v8/02-solution-board.png', [['辰希：先把积分方程','化成微分方程。'],['老师：居然解出来了！','大家看看她的思路。']]),
 3:('art/chapter-08-reset-v9/03-help-classroom-b.png', [['好友：为什么要求导？'],['辰希：求两次导数，','再看边界条件。']]),
 4:('art/chapter-08-reset-v9/04-practice-classroom.png', [['好友：第二个特征值，','我算出来了！'],['辰希：对，是4/(9π²)。']]),
-6:('deliverables/review-chapter-08-reset-v8/typeset/06.png',None),
-7:('deliverables/review-chapter-08-reset-v8/typeset/07.png',None),
+6:('deliverables/章节/第八话/review-chapter-08-reset-v8/typeset/06.png',None),
+7:('deliverables/章节/第八话/review-chapter-08-reset-v8/typeset/07.png',None),
 }
 if __name__ == "__main__":
     OUT.mkdir(parents=True,exist_ok=True)

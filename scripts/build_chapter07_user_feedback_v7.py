@@ -7,7 +7,10 @@ from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('仅允许 --draft')
 r=Path(__file__).resolve().parents[1]
-out=r/'deliverables/章节/第七话/review-chapter-07-user-feedback-v7'; pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
+out=r/'deliverables/章节/第七话/review-chapter-07-user-feedback-v7'; pages=out/'pages'
+if any((out/name).exists() for name in ('第七话_返修试排.md','第七话_返修完整版.pdf','第七话_返修轻量试排.pdf')) or any((pages/name).exists() for name in ('page-00-cover.png','page-03.png')):
+ raise SystemExit('第七话 v7 已有文件；为保护确认版，禁止原地重建。请复制脚本并使用新的输出目录。')
+pages.mkdir(parents=True,exist_ok=True)
 font=r/'assets/fonts/NotoSansCJKsc-Bold.otf'; W,H=1440,1920
 # Add a separate title band instead of covering the existing cover artwork.
 cover=Image.open(r/'deliverables/章节/第七话/review-chapter-07-dialogue-draft/pages/page-00-cover.png').convert('RGB')

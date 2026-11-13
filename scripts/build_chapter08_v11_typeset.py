@@ -3,14 +3,19 @@
 Original approved images remain untouched. Requires Pillow/fonttools.
 """
 from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+OUT=ROOT/'deliverables/章节/第八话/review-chapter-08-reset-v11/typeset'
+# v11 is user-approved. Do not let this historical one-off overwrite any pages.
+if OUT.exists() and any(OUT.glob('*.png')):
+    raise SystemExit('第八话 v11 已有页面；为保护确认版，禁止原地重建。请复制脚本并使用新的输出目录。')
+
 import sys
 from PIL import Image, ImageDraw, ImageFont, ImageChops
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 import build_chapter08_v9_typeset as old
 
-ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'deliverables/review-chapter-08-reset-v11/typeset'
 OUT.mkdir(parents=True,exist_ok=True)
 FONT=ROOT/'assets/fonts/NotoSansCJKsc-Regular.otf'
 # center, target mouth, lines. Coordinates are specific to each unscaled source.

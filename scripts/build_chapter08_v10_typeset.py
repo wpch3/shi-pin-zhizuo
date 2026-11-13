@@ -10,7 +10,7 @@ from speech_text_layout import measure_speech_text
 import build_chapter08_v9_typeset as old
 
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'deliverables/review-chapter-08-reset-v10/typeset'
+OUT=ROOT/'deliverables/章节/第八话/review-chapter-08-reset-v10/typeset'
 OUT.mkdir(parents=True,exist_ok=True)
 FONT=ROOT/'assets/fonts/NotoSansCJKsc-Regular.otf'
 # center, target mouth, lines. Coordinates are specific to each unscaled source.

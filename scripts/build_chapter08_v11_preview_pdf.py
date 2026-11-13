@@ -6,12 +6,15 @@ Requires Pillow and reportlab. Page images retain their aspect ratios; PDF conta
 from io import BytesIO
 from pathlib import Path
 import re
+
+ROOT = Path(__file__).resolve().parents[1]
+DIR = ROOT / 'deliverables/章节/第八话/review-chapter-08-reset-v11'
+if (DIR / '第八话_气泡位置修订预览.pdf').exists():
+    raise SystemExit('第八话 v11 PDF 已存在；为保护确认版，禁止原地重建。请复制脚本并使用新的输出目录。')
+
 from PIL import Image
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
-
-ROOT = Path(__file__).resolve().parents[1]
-DIR = ROOT / 'deliverables/review-chapter-08-reset-v11'
 markdown = (DIR / '第八话_气泡位置修订预览.md').read_text(encoding='utf-8')
 paths = re.findall(r'!\[[^\]]*\]\(([^)]+)\)', markdown)
 if len(paths) != 19:

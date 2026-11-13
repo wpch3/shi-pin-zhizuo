@@ -6,7 +6,10 @@ from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('仅允许 --draft')
 root=Path(__file__).resolve().parents[1]
-out=root/'deliverables/章节/第三话/review-chapter-03-user-feedback-v2';pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
+out=root/'deliverables/章节/第三话/review-chapter-03-user-feedback-v2';pages=out/'pages'
+if any((pages/f'page-{n:02}.png').exists() for n in (8,10,11)) or (out/'第三话_用户反馈返修试排.md').exists() or (out/'第三话_轻量试排预览.pdf').exists():
+ raise SystemExit('第三话反馈返修 v2 已有文件；为保护确认版，禁止原地重建。请复制脚本并使用新的输出目录。')
+pages.mkdir(parents=True,exist_ok=True)
 font=root/'assets/fonts/NotoSansCJKsc-Bold.otf'
 def page(n,source,dialogues):
  with Image.open(root/source) as src:

@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'art/chapter-08-reset-v1/02-solution.png'
-OUT = ROOT / 'deliverables/review-chapter-08-reset-v2/page-02-typeset-preview.png'
+OUT = ROOT / 'deliverables/章节/第八话/review-chapter-08-reset-v2/page-02-typeset-preview.png'
 FONT = ROOT / 'assets/fonts/NotoSansCJKsc-Bold.otf'
 im = Image.open(SOURCE).convert('RGB')
 if im.size != (848, 1264):
