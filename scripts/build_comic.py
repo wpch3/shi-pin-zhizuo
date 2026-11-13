@@ -15,7 +15,7 @@ CHAR_DIR = ROOT / "art/characters"
 CUT_DIR = ROOT / "art/cutouts"
 OUT = ROOT / "deliverables"
 SHEETS = OUT / "character-sheets"
-PAGES = OUT / "chapter-01"
+PAGES = OUT / "章节/第一话/历史图源/chapter-01"
 for d in (CUT_DIR, SHEETS, PAGES):
     d.mkdir(parents=True, exist_ok=True)
 

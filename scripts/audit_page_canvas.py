@@ -19,7 +19,7 @@
 
 用法：
     .venv/bin/python scripts/audit_page_canvas.py art/chapter-03-v5
-    .venv/bin/python scripts/audit_page_canvas.py deliverables/full-v4/chapter-03
+    .venv/bin/python scripts/audit_page_canvas.py deliverables/章节/第三话/历史图源/full-v4
     .venv/bin/python scripts/audit_page_canvas.py art/chapter-03-v4 --anchor shot-01.png
 """
 from __future__ import annotations

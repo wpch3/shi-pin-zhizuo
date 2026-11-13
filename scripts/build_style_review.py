@@ -2,7 +2,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "deliverables" / "visual-review"
+OUT = ROOT / "deliverables" / "人物资料/历史图源/visual-review"
 OUT.mkdir(parents=True, exist_ok=True)
 FONT = ROOT / "assets" / "fonts" / "NotoSansCJKsc-Regular.otf"
 W, H = 1800, 2400

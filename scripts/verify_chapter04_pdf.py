@@ -21,8 +21,8 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 D = ROOT / 'deliverables'
 OUTPUT = D / '章节/第四话/原交付'
-PAGES = sorted((D / 'full-v4/chapter-04').glob('page-*.png'))
-VERT = sorted((D / 'full-v4-vertical/chapter-04').glob('page-*.png'))
+PAGES = sorted((D / '章节/第四话/历史图源/full-v4').glob('page-*.png'))
+VERT = sorted((D / '章节/第四话/历史图源/full-v4-vertical').glob('page-*.png'))
 N = 10
 LOSSLESS = [
     (OUTPUT / '第四话_陪小满.pdf', PAGES, 691.2, 921.6),

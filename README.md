@@ -6,7 +6,7 @@
 
 **第二话最新进度**：[全新重绘v2逐页版（用户已确认）](deliverables/章节/第二话/review-chapter-02-redraw-v2/逐页看图.md)；[旧原画草稿与历史待修状态](art/chapter-02-redraw/逐页原画草稿.md)。
 
-**历史逐页查看**：[第一话检查版及第二话旧版](deliverables/review-chapters-01-02/逐页看图.md)；[第二话8页试排](deliverables/章节/第二话/review-chapter-02-alignment/逐页看图.md)（并轨尚未完成，非定稿）。
+**历史逐页查看**：[第一话检查版及第二话旧版](deliverables/历史资料/跨话索引/第一二话_逐页看图.md)；[第二话8页试排](deliverables/章节/第二话/review-chapter-02-alignment/逐页看图.md)（并轨尚未完成，非定稿）。
 
 > **每次制作、修改、检查与交付前必读：`AGENTS.md`、`PROJECT_MEMORY.md`、`docs/错误复盘与优化方案长期记录.md`。必须逐页用眼睛观察实际成图并结合剧情与构图思考；脚本、尺寸、页数和几何检查通过不等于完成。**V4封面与7页正片均已重新独立绘制，不调用旧正片、不把人设立绘当剧情图，也不以“原图加方框”冒充优化。V3第一话保留作退回版本记录。
 
@@ -14,18 +14,18 @@
 
 ## 正式交付
 
-- `deliverables/第一话_V4_精细化重制.pdf`：独立剧情封面＋7页独立正片，共8页。
-- `deliverables/第一话_竖屏全页漫画.pdf`：按用户参考原图比例制作的竖屏视频版，共8页。
-- `deliverables/full-v4/chapter-01/`：V4的8张定版阅读PNG，3:4、1440×1920。
-- `deliverables/full-v4-vertical/chapter-01/`：8张竖屏视频PNG，1440×2146；定版原画逐像素保留，只在上下补暖纸色。
+- `deliverables/章节/第一话/历史散装/第一话_V4_精细化重制.pdf`：独立剧情封面＋7页独立正片，共8页。
+- `deliverables/章节/第一话/历史散装/第一话_竖屏全页漫画.pdf`：按用户参考原图比例制作的竖屏视频版，共8页。
+- `deliverables/章节/第一话/历史图源/full-v4/`：V4的8张定版阅读PNG，3:4、1440×1920。
+- `deliverables/章节/第一话/历史图源/full-v4-vertical/`：8张竖屏视频PNG，1440×2146；定版原画逐像素保留，只在上下补暖纸色。
 - `art/chapter-01-v4/`：本次重新绘制的封面与7张剧情原图，均尚未验收；当前隔离草稿的第5、6页也使用这里的新原画。旧正式成品保持不变，新画未获验收前不得视为正式替换。
 - `art/user-final/chapter-01/`：用户上传的第一话第5、6页最终原图、来源与哈希清单。旧文件及哈希继续只读保留；用户已授权整话重绘，试排不再以旧图为图源，第6页第四项仍须为“4. 睡觉休息”。
-- `deliverables/第三话_妹妹的休息日.pdf`：第三话封面＋11页正片，**共12页**（2026-11-08 v7 返修版，PNG/Flate 无损，约37MB，作印刷／归档备份）。
-- `deliverables/第三话_竖屏全页漫画.pdf`：第三话1440×2146竖屏视频版，共12页（PNG/Flate 无损，约37MB，作备份）。
-- `deliverables/第三话_逐页看图.md`：**推荐入口**，12张PNG相对路径内嵌，GitHub网页直接逐页显示，不下载、不转图。大PDF在GitHub在线预览会失败，故主交付不再依赖PDF。
-- `deliverables/第三话_12页PNG图片版.zip`：12张1440×1920 PNG 原样打包，一次下载解压即得全部页图，逐张字节等同母版。
-- `deliverables/第三话_轻量在线预览.pdf`：12页720×960、JPEG q=88、2.15MB，供连续翻页／打印草稿；**明确非定稿**，定稿画质以无损PDF与PNG为准。
-- `deliverables/full-v4/chapter-03/`、`deliverables/full-v4-vertical/chapter-03/`：第三话阅读版与竖屏版独立PNG。
+- `deliverables/章节/第三话/原交付/第三话_妹妹的休息日.pdf`：第三话封面＋11页正片，**共12页**（2026-11-08 v7 返修版，PNG/Flate 无损，约37MB，作印刷／归档备份）。
+- `deliverables/章节/第三话/原交付/第三话_竖屏全页漫画.pdf`：第三话1440×2146竖屏视频版，共12页（PNG/Flate 无损，约37MB，作备份）。
+- `deliverables/章节/第三话/原交付/第三话_逐页看图.md`：**推荐入口**，12张PNG相对路径内嵌，GitHub网页直接逐页显示，不下载、不转图。大PDF在GitHub在线预览会失败，故主交付不再依赖PDF。
+- `deliverables/章节/第三话/原交付/第三话_12页PNG图片版.zip`：12张1440×1920 PNG 原样打包，一次下载解压即得全部页图，逐张字节等同母版。
+- `deliverables/章节/第三话/原交付/第三话_轻量在线预览.pdf`：12页720×960、JPEG q=88、2.15MB，供连续翻页／打印草稿；**明确非定稿**，定稿画质以无损PDF与PNG为准。
+- `deliverables/章节/第三话/历史图源/full-v4/`、`deliverables/章节/第三话/历史图源/full-v4-vertical/`：第三话阅读版与竖屏版独立PNG。
 - `docs/第三话_用户确认剧情与制作边界.md`：第三话已确认的8个事件、现行12页映射、历次开工补充决定与禁止扩写边界。
 - `docs/第三话_正式分镜与台词.md`：第三话封面+11页正片正式分镜与台词、家居/外出服；现行道具为一份巨型巴菲＋两把长勺（旧的Y形双头吸管设定已作废，仅作历史记录）。
 - `docs/第三话_第三次返修与交付记录.md`：v7 两个方案的判断与理由、截图逐项处理、12页逐角色手部／道具清点表、大PDF三件套方案与沙箱资源检查。
@@ -41,12 +41,12 @@
 - `scripts/export_lightweight_preview.py`：生成逐页看图页、PNG图片版ZIP、轻量预览PDF；`scripts/verify_chapter03_pdf.py`：校验两份无损PDF、轻量PDF、ZIP字节一致、看图页链接。
 - `deliverables/章节/第二话/历史散装/第二话_二姐的独占时间.pdf`：第二话独立封面＋7页正片，共8页。
 - `deliverables/章节/第二话/历史散装/第二话_竖屏全页漫画.pdf`：第二话1440×2146竖屏视频版。
-- `deliverables/full-v4/chapter-02/`、`deliverables/full-v4-vertical/chapter-02/`：第二话阅读版与竖屏版独立PNG。
+- `deliverables/章节/第二话/历史图源/full-v4/`、`deliverables/章节/第二话/历史图源/full-v4-vertical/`：第二话阅读版与竖屏版独立PNG。
 - `docs/第二话_二姐的独占时间.md`、`docs/V4第二话精细化制作记录.md`：第二话定稿剧本、逐页制作与审查记录。
 - `deliverables/人物资料/人设与合照/完整人设与合照_V3.pdf`：7张完整人设卡＋七人合照，共8页。
 - `deliverables/人物资料/人设与合照/完整人设与合照.pdf`：同一正式人设与合照的通用路径。
 - **人设图看图入口（2026-11-09 新增，网页直接可看）**：`deliverables/人物资料/人设与合照/完整人设与合照_逐页看图.md`（8 张人设卡＋7 张官方立绘＋合照基准）；`deliverables/人物资料/人设与合照/完整人设与合照_PNG版/` 8 张 PNG；`deliverables/人物资料/人设与合照/完整人设与合照_8页PNG图片版.zip`；`deliverables/人物资料/人设与合照/character-cards-v3-preview.pdf`（ASCII 名轻量预览，720×960 / JPEG q=88 / 485KB，**明确非定稿**）；`deliverables/人物资料/人设与合照/完整人设与合照_V3_兼容版.pdf`（补 `/ID` 的兼容重存版）。若中文名 PDF 网页打不开，优先用看图页或 PNG 版。生成／自检：`scripts/export_character_cards_preview.py`。
-- `deliverables/full-v3/characters/`：7张人设卡及1张合照PNG；每张人设卡均已合并该角色的单独立绘、姓名身份、人物简介与完整设定。
+- `deliverables/人物资料/历史图源/full-v3/`：7张人设卡及1张合照PNG；每张人设卡均已合并该角色的单独立绘、姓名身份、人物简介与完整设定。
 - `data/characters.json`：七人正式姓名与补全人设的排版来源。
 - `docs/V3角色与画风锁定.md`：唯一参考、造型和统一画风规范。
 - `docs/V3逐页视觉与剧情审查.md`：每页交付前必须执行的视觉、画风及剧情审查铁律。
@@ -85,6 +85,6 @@ python3 -m venv .venv
 
 ## 历史文件
 
-V2漫画样张仅作制作过程记录，不再作为正式风格。旧版单独人设卡、旧人设合集PDF及V2角色标准卡已经舍弃并移出交付目录；正式人设只以 `deliverables/full-v3/characters/` 和 `deliverables/人物资料/人设与合照/完整人设与合照_V3.pdf` 为准。
+V2漫画样张仅作制作过程记录，不再作为正式风格。旧版单独人设卡、旧人设合集PDF及V2角色标准卡已经舍弃并移出交付目录；正式人设只以 `deliverables/人物资料/历史图源/full-v3/` 和 `deliverables/人物资料/人设与合照/完整人设与合照_V3.pdf` 为准。
 
 旧版 `art/characters/`、`art/vertical-chapter-01/`、早期四格漫画和 `stories/` 同样属于历史草案。被否决的 `niece-refined.png` 不得恢复使用。

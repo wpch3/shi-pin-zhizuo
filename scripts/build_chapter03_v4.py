@@ -44,8 +44,8 @@ ROOT = Path(__file__).resolve().parents[1]
 W, H = 1440, 1920
 VERTICAL_SIZE = (1440, 2146)
 SRC = ROOT / 'art/chapter-03-v7'
-OUT = ROOT / 'deliverables/full-v4/chapter-03'
-VERTICAL_OUT = ROOT / 'deliverables/full-v4-vertical/chapter-03'
+OUT = ROOT / 'deliverables/章节/第三话/历史图源/full-v4'
+VERTICAL_OUT = ROOT / 'deliverables/章节/第三话/历史图源/full-v4-vertical'
 FONT = ROOT / 'assets/fonts/NotoSansCJKsc-Bold.otf'
 PAPER = '#F8F4EB'
 INK = '#292B2C'
@@ -157,8 +157,8 @@ _EXPECTED_OUTPUTS = (
     [OUT / 'page-00-cover.png'] + [OUT / f'page-{i:02d}.png' for i in range(1, LAST + 1)]
     + [VERTICAL_OUT / 'page-00-cover.png']
     + [VERTICAL_OUT / f'page-{i:02d}.png' for i in range(1, LAST + 1)]
-    + [ROOT / 'deliverables/第三话_妹妹的休息日.pdf',
-       ROOT / 'deliverables/第三话_竖屏全页漫画.pdf']
+    + [ROOT / 'deliverables/章节/第三话/原交付/第三话_妹妹的休息日.pdf',
+       ROOT / 'deliverables/章节/第三话/原交付/第三话_竖屏全页漫画.pdf']
 )
 if (PREVIOUS.get('source_digest') == CURRENT_SOURCE_DIGEST
         and all(p.exists() for p in _EXPECTED_OUTPUTS)):
@@ -271,8 +271,8 @@ num(im, 11)
 save_png(im, OUT / 'page-11.png')
 pages.append(im)
 
-READING_PDF = ROOT / 'deliverables/第三话_妹妹的休息日.pdf'
-VERTICAL_PDF = ROOT / 'deliverables/第三话_竖屏全页漫画.pdf'
+READING_PDF = ROOT / 'deliverables/章节/第三话/原交付/第三话_妹妹的休息日.pdf'
+VERTICAL_PDF = ROOT / 'deliverables/章节/第三话/原交付/第三话_竖屏全页漫画.pdf'
 # 阅读版落盘变化数，用来判断派生 PDF 是否需要重写（72MB 无谓重写同样属于多余工作）。
 reading_written = BUILD_STATS['written']
 # PDF 只由这些 PNG 的字节生成：像素全部未变时 PDF 必然相同，不因脚本注释/文档改动而

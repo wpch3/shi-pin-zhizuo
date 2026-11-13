@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parents[1]
 DATA=json.loads((ROOT/'data/characters.json').read_text(encoding='utf-8'))
 FONT=ROOT/'assets/fonts/NotoSansCJKsc-Bold.otf'
 W,H=1440,1920
-OUT=ROOT/'deliverables/full-v3'; COUT=OUT/'characters'; OOUT=OUT/'chapter-01'
+COUT=ROOT/'deliverables/人物资料/历史图源/full-v3'; OOUT=ROOT/'deliverables/章节/第一话/历史图源/full-v3'
 COUT.mkdir(parents=True,exist_ok=True);OOUT.mkdir(parents=True,exist_ok=True)
 PAPER='#F8F4EB'; INK='#292B2C'; RED='#92504C'; YELLOW='#E9BD4F'; MUTED='#746E67'
 

@@ -19,7 +19,7 @@ def page(n,source,dialogues):
  im.save(pages/f'page-{n:02}.png',optimize=True)
 page(8,'art/chapter-03-style-repair/shot-08-v2.png',[(['一人一半……','你不许笑我。'],(300,200),(470,690),29),(['……嗯，不笑。'],(1120,190),(960,620),29)])
 page(9,'art/chapter-03-style-repair/shot-09-v1.png',[(['靠近一点，看镜头！'],(330,190),(520,700),28),(['这样？'],(1180,230),(1000,620),28),(['对，笑一下嘛。'],(330,400),(520,700),28)])
-orig=root/'deliverables/full-v4/chapter-03';md=['# 第三话｜风格返修试排（未完成）','','> 只重绘08和09；其他10页沿用原成品，旧成品未被覆盖。08新图有两把勺和一杯甜品，但妹妹针织背心的麻花纹消失，和07/09服装不连续，仍需返修；09为候选，需对照人物脸型。绝非完成版。','']
+orig=root/'deliverables/章节/第三话/历史图源/full-v4';md=['# 第三话｜风格返修试排（未完成）','','> 只重绘08和09；其他10页沿用原成品，旧成品未被覆盖。08新图有两把勺和一杯甜品，但妹妹针织背心的麻花纹消失，和07/09服装不连续，仍需返修；09为候选，需对照人物脸型。绝非完成版。','']
 for i in range(12):
  name='page-00-cover.png' if i==0 else f'page-{i:02}.png';src=pages/name if i in (8,9) else orig/name
  rel=os.path.relpath(src,out);md += [f'## {"封面" if i==0 else f"第{i:02}页"}','',f'![第{i:02}页]({rel})','']

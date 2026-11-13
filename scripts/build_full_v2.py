@@ -7,8 +7,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = json.loads((ROOT / "data/characters.json").read_text(encoding="utf-8"))
 FONT = ROOT / "assets/fonts/NotoSansCJKsc-Bold.otf"
 W, H = 1440, 1920
-OUT = ROOT / "deliverables/full-v2"
-COUT, OOUT = OUT / "characters", OUT / "chapter-01"
+OUT = ROOT / "deliverables/章节/第一话/历史图源/full-v2"
+COUT, OOUT = ROOT / "deliverables/人物资料/历史图源/full-v2", OUT / "chapter-01"
 COUT.mkdir(parents=True, exist_ok=True)
 OOUT.mkdir(parents=True, exist_ok=True)
 INK = "#151114"
@@ -90,7 +90,7 @@ def page_num(im, n):
 
 pages = []
 # Selected V2 cover.
-cover = scene(ROOT / "deliverables/style-v2/page-01.png")
+cover = scene(ROOT / "deliverables/章节/第一话/历史图源/style-v2/page-01.png")
 ImageDraw.Draw(cover).rectangle((1190,1815,1440,1920),fill="white")
 cover.save(OOUT / "page-00-cover.png"); pages.append(cover)
 
@@ -101,7 +101,7 @@ page_num(im,1); im.save(OOUT/"page-01.png"); pages.append(im)
 
 # V2 sister lean and competition samples become shots 2 and 3.
 for i in (2,3):
-    im=scene(ROOT/f"deliverables/style-v2/page-{i:02d}.png")
+    im=scene(ROOT/f"deliverables/章节/第一话/历史图源/style-v2/page-{i:02d}.png")
     ImageDraw.Draw(im).rectangle((1190,1815,1440,1920),fill="white")
     page_num(im,i); im.save(OOUT/f"page-{i:02d}.png"); pages.append(im)
 
@@ -151,7 +151,7 @@ d.rounded_rectangle((120,1775,1320,1875),radius=28,fill=INK)
 d.text((165,1800),"二弟被预约的第一天，正式开始。",font=ft(39),fill=YELLOW)
 page_num(im,7); im.save(OOUT/"page-07.png"); pages.append(im)
 
-pdf_comic=ROOT/"deliverables/第一话_竖屏全页漫画.pdf"
+pdf_comic=ROOT/"deliverables/章节/第一话/历史散装/第一话_竖屏全页漫画.pdf"
 pages[0].save(pdf_comic,save_all=True,append_images=pages[1:],resolution=150)
 pages[0].save(ROOT/"deliverables/章节/第一话/历史散装/第一话_V2_完整重制.pdf",save_all=True,append_images=pages[1:],resolution=150)
 

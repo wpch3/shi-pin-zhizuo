@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "deliverables/style-v2"
+OUT = ROOT / "deliverables/章节/第一话/历史图源/style-v2"
 OUT.mkdir(parents=True, exist_ok=True)
 FONT = ROOT / "assets/fonts/NotoSansCJKsc-Bold.otf"
 W, H = 1440, 1920

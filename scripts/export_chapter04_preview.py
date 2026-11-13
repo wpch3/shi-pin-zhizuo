@@ -20,7 +20,7 @@ from PIL import Image
 import pymupdf
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / 'deliverables/full-v4/chapter-04'
+SRC = ROOT / 'deliverables/章节/第四话/历史图源/full-v4'
 OUT_DIR = ROOT / 'deliverables/章节/第四话/原交付'
 PREVIEW = OUT_DIR / '第四话_轻量在线预览.pdf'
 ZIP = OUT_DIR / '第四话_10页PNG图片版.zip'

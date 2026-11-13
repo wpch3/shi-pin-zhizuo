@@ -4,4 +4,4 @@
 
 [原交付](原交付/)集中保存此前散放在交付区根目录的第四话阅读 PDF、竖屏 PDF、轻量预览、PNG 图片包及[逐页看图](原交付/第四话_逐页看图.md)。该处是原有交付的归档位置，不代表重新制作或新增版本。
 
-原始 PNG 图源仍在跨话的 `deliverables/full-v4/chapter-04` 和 `deliverables/full-v4-vertical/chapter-04`，此次没有移动；两份 PDF 的逐页解码图像及 ZIP 与各自图源校验通过。跨话合集以后将另行核查、整理，避免误拆引用。
+原始 PNG 图源已从跨话目录分别迁入[历史图源/full-v4](历史图源/full-v4/)和[历史图源/full-v4-vertical](历史图源/full-v4-vertical/)，不改图片内容；两份 PDF 的逐页解码图像及 ZIP 与各自图源校验通过。

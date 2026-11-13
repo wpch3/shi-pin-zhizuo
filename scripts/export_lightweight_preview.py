@@ -21,14 +21,15 @@ from pathlib import Path
 import hashlib
 import io
 import json
+import os
 import zipfile
 
 from PIL import Image
 import pymupdf
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / 'deliverables/full-v4/chapter-03'
-OUT_DIR = ROOT / 'deliverables'
+SRC = ROOT / 'deliverables/章节/第三话/历史图源/full-v4'
+OUT_DIR = ROOT / 'deliverables/章节/第三话/原交付'
 PREVIEW = OUT_DIR / '第三话_轻量在线预览.pdf'
 ZIP = OUT_DIR / '第三话_12页PNG图片版.zip'
 GALLERY = OUT_DIR / '第三话_逐页看图.md'
@@ -55,6 +56,9 @@ def page_digest(paths):
 
 
 def main():
+    if any(p.exists() or p.is_symlink() for p in (PREVIEW, ZIP, GALLERY)):
+        raise SystemExit('第三话已有交付文件；为保护作品，禁止原地重建。请复制脚本并使用新的输出目录。')
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
     pages = sorted(SRC.glob('page-*.png'))
     if len(pages) != 12:
         raise SystemExit(f'阅读版应为 12 页，实测 {len(pages)} 页：{SRC}')
@@ -101,7 +105,7 @@ def main():
         '',
     ]
     for i, path in enumerate(pages):
-        rel = path.relative_to(OUT_DIR).as_posix()
+        rel = os.path.relpath(path, OUT_DIR).replace(os.sep, '/')
         lines += [f'## {label(path, i)}', '', f'![{label(path, i)}]({rel})', '']
     GALLERY.write_text('\n'.join(lines), encoding='utf-8')
 
