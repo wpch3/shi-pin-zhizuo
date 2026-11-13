@@ -4,11 +4,11 @@ import os, io, sys
 import pymupdf
 from PIL import Image, ImageChops
 if sys.argv[1:] != ['--draft']: raise SystemExit('only --draft')
-r=Path(__file__).resolve().parents[1];out=r/'deliverables/review-xiaoman-lap-short-v3';out.mkdir(parents=True,exist_ok=True)
+r=Path(__file__).resolve().parents[1];out=r/'deliverables/短篇与个人回/小满膝枕/review-xiaoman-lap-short-v3';out.mkdir(parents=True,exist_ok=True)
 original=r/'art/xiaoman-lap-short-v2/04-turn-new-view.png'; fixed=r/'art/xiaoman-lap-short-v3/04-gentle-face-only.png'
 a=Image.open(original).convert('RGB');b=Image.open(fixed).convert('RGB');assert a.size==b.size
 bbox=ImageChops.difference(a,b).getbbox();assert bbox and bbox[0]>=210 and bbox[1]>=365 and bbox[2]<=320 and bbox[3]<=465,bbox
-paths=[r/f'deliverables/review-xiaoman-lap-short-v1/pages/{n:02}.png' for n in range(1,4)]+[fixed]
+paths=[r/f'deliverables/短篇与个人回/小满膝枕/review-xiaoman-lap-short-v1/pages/{n:02}.png' for n in range(1,4)]+[fixed]
 lines=['# 小满与小叔｜膝枕短篇 v3（待审）','','> 第04图按用户回传截图选用原构图，仅局部调整小满表情；前三图沿用v1。对白为试排，整篇尚待用户审阅。不自动算第九话。','']
 for n,p in enumerate(paths,1):lines += [f'## 第{n}图','',f'![第{n}图]({os.path.relpath(p,out)})','']
 (out/'逐页看图.md').write_text('\n'.join(lines),encoding='utf8')

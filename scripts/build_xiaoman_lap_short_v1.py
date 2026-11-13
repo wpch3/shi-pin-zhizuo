@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('only --draft')
-r=Path(__file__).resolve().parents[1];o=r/'deliverables/review-xiaoman-lap-short-v1';pages=o/'pages';pages.mkdir(parents=True,exist_ok=True)
+r=Path(__file__).resolve().parents[1];o=r/'deliverables/短篇与个人回/小满膝枕/review-xiaoman-lap-short-v1';pages=o/'pages';pages.mkdir(parents=True,exist_ok=True)
 sources=['01-invitation.png','02-offer.png','03-rest.png','04-turn-v2.png']
 speech={1:[(['小叔，来这里！'],(450,250),(450,650))],2:[(['小满的膝枕', '借给你！'],(425,260),(450,680)),(['好，谢谢小满。'],(1050,320),(940,700))],3:[(['小叔，休息一下吧。'],(410,250),(410,680))]}
 font=ImageFont.truetype(str(r/'assets/fonts/NotoSansCJKsc-Bold.otf'),37)

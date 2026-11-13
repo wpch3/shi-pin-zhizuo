@@ -8,8 +8,8 @@ from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']:
     raise SystemExit('Only --draft is allowed')
 r=Path(__file__).resolve().parents[1]
-out=r/'deliverables/review-xiaoman-short-01-dialogue-v3'; (out/'pages').mkdir(parents=True,exist_ok=True)
-old=r/'deliverables/review-xiaoman-short-01-blanket-v2/pages'
+out=r/'deliverables/短篇与个人回/小满盖被/review-xiaoman-short-01-dialogue-v3'; (out/'pages').mkdir(parents=True,exist_ok=True)
+old=r/'deliverables/短篇与个人回/小满盖被/review-xiaoman-short-01-blanket-v2/pages'
 with Image.open(old/'page-01.png') as img: page=img.convert('RGB')
 d=ImageDraw.Draw(page); font=ImageFont.truetype(str(r/'assets/fonts/NotoSansCJKsc-Bold.otf'),34)
 center=(1050,165); lines=['小叔又没盖被子，','感冒了就不能','跟我一起玩了。']

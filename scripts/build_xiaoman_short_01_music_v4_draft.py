@@ -7,9 +7,9 @@ from speech_bubble_geometry import oval_speech
 if sys.argv[1:] != ['--draft']:
     raise SystemExit('Only --draft is allowed')
 r=Path(__file__).resolve().parents[1]
-out=r/'deliverables/review-xiaoman-short-01-humming-v4'; (out/'pages').mkdir(parents=True,exist_ok=True)
-v3=r/'deliverables/review-xiaoman-short-01-dialogue-v3/pages/page-01.png'
-v2=r/'deliverables/review-xiaoman-short-01-blanket-v2/pages'
+out=r/'deliverables/短篇与个人回/小满盖被/review-xiaoman-short-01-humming-v4'; (out/'pages').mkdir(parents=True,exist_ok=True)
+v3=r/'deliverables/短篇与个人回/小满盖被/review-xiaoman-short-01-dialogue-v3/pages/page-01.png'
+v2=r/'deliverables/短篇与个人回/小满盖被/review-xiaoman-short-01-blanket-v2/pages'
 with Image.open(v2/'page-02.png') as src: page=src.convert('RGB')
 d=ImageDraw.Draw(page);center=(1110,330);shape=oval_speech(center,(118,98),(1020,860),tail_length=35,tail_width=28,bend=2)
 d.polygon(shape,fill='#F8F4EB');d.line(shape+[shape[0]],fill='#292B2C',width=3,joint='curve')

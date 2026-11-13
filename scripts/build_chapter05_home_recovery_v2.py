@@ -9,7 +9,7 @@ from draft_output import save_png_if_changed
 if sys.argv[1:] != ['--draft']:
     raise SystemExit('仅允许 --draft')
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'deliverables/章节/第六话/review-chapter-05-home-recovery-v2/pages'
+OUT = ROOT / 'deliverables/章节/第五话/review-chapter-05-home-recovery-v2/pages'
 OUT.mkdir(parents=True, exist_ok=True)
 FONT = ROOT / 'assets/fonts/NotoSansCJKsc-Bold.otf'
 W,H=896,1200
@@ -47,7 +47,7 @@ def save(im,num):
         ImageDraw.Draw(im).text((round(1290*S),round(1860*S)),f'{num:02d} / 17',font=ImageFont.truetype(str(FONT),13),fill='#F8F4EB',stroke_width=1,stroke_fill='#292B2C')
     name = 'page-00-cover.png' if num==0 else f'page-{num:02d}.png'
     dest = OUT / name
-    old = ROOT / 'deliverables/章节/第六话/review-chapter-05-home-recovery/pages' / name
+    old = ROOT / 'deliverables/章节/第五话/review-chapter-05-home-recovery/pages' / name
     with Image.open(old) as previous:
         same = previous.size == im.size and ImageChops.difference(previous.convert('RGB'), im.convert('RGB')).getbbox() is None
     if same:

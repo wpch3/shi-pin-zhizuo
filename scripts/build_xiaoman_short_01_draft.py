@@ -8,7 +8,7 @@ from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']:
     raise SystemExit('Only --draft is allowed')
 r=Path(__file__).resolve().parents[1]
-out=r/'deliverables/review-xiaoman-short-01'; (out/'pages').mkdir(parents=True,exist_ok=True)
+out=r/'deliverables/短篇与个人回/小满盖被/review-xiaoman-short-01'; (out/'pages').mkdir(parents=True,exist_ok=True)
 images=[]
 for n in (1,2):
     p=r/f'art/xiaoman-short-01/scene-0{n}-v1.png'

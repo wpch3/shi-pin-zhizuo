@@ -6,8 +6,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageChops
 from speech_bubble_geometry import oval_speech
 from speech_text_layout import measure_speech_text
 if sys.argv[1:] != ['--draft']: raise SystemExit('only --draft')
-r=Path(__file__).resolve().parents[1]; out=r/'deliverables/review-xiaoman-lap-short-v4'; pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
-sources=[r/'deliverables/review-xiaoman-lap-short-v1/pages/01.png',r/'deliverables/review-xiaoman-lap-short-v1/pages/02.png',r/'deliverables/review-xiaoman-lap-short-v1/pages/03.png',r/'art/xiaoman-lap-short-v3/04-gentle-face-only.png']
+r=Path(__file__).resolve().parents[1]; out=r/'deliverables/短篇与个人回/小满膝枕/review-xiaoman-lap-short-v4'; pages=out/'pages';pages.mkdir(parents=True,exist_ok=True)
+sources=[r/'deliverables/短篇与个人回/小满膝枕/review-xiaoman-lap-short-v1/pages/01.png',r/'deliverables/短篇与个人回/小满膝枕/review-xiaoman-lap-short-v1/pages/02.png',r/'deliverables/短篇与个人回/小满膝枕/review-xiaoman-lap-short-v1/pages/03.png',r/'art/xiaoman-lap-short-v3/04-gentle-face-only.png']
 im=Image.open(sources[2]).convert('RGB'); d=ImageDraw.Draw(im)
 font=ImageFont.truetype(str(r/'assets/fonts/NotoSansCJKsc-Bold.otf'),37)
 lines=['小满，我想趴一会儿，','可以吗？'];center=(980,420);target=(515,1080)
