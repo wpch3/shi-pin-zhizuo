@@ -8,7 +8,7 @@ import pymupdf
 if sys.argv[1:] != ['--draft']:
     raise SystemExit('仅允许 --draft，禁止写正式目录')
 root = Path(__file__).resolve().parents[1]
-out = root / 'deliverables/review-chapter-05-v3'
+out = root / 'deliverables/章节/第六话/review-chapter-05-v3'
 pages = [out / 'pages' / 'page-00-cover.png'] + [out / 'pages' / f'page-{n:02d}.png' for n in range(1, 10)]
 labels = ['封面','出发','商量路线','企鹅和肩上骑','海底隧道','四人合影','水母','休息','企鹅玩偶','回家']
 assert all(p.is_file() for p in pages)

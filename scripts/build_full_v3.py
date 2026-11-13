@@ -106,5 +106,5 @@ d.text((50,35),DATA['work_title'],font=ft(60),fill=INK);d.text((55,125),'全员�
 group=Image.open(ROOT/'art/family-v3/group.png').convert('RGB');paste_fit(im,group,(45,190,1350,1650))
 im.save(COUT/'08-family.png');cards.append(im)
 for name in ['完整人设与合照_V3.pdf','完整人设与合照.pdf']:
- cards[0].save(ROOT/'deliverables'/name,save_all=True,append_images=cards[1:],resolution=150)
+ cards[0].save(ROOT/'deliverables/人物资料/人设与合照'/name,save_all=True,append_images=cards[1:],resolution=150)
 print('Built',len(pages),'V3 comic pages and',len(cards),'character/family pages')

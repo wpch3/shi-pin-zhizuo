@@ -10,7 +10,7 @@ if sys.argv[1:] != ['--draft']:
     raise SystemExit('仅允许 --draft，禁止写正式目录')
 ROOT = Path(__file__).resolve().parents[1]
 OLD, NEW = ROOT / 'art/chapter-05-aquarium', ROOT / 'art/chapter-05-aquarium-v2'
-OUT = ROOT / 'deliverables/review-chapter-05-v3/pages'
+OUT = ROOT / 'deliverables/章节/第六话/review-chapter-05-v3/pages'
 OUT.mkdir(parents=True, exist_ok=True)
 W, H = 1440, 1920
 FONT = ROOT / 'assets/fonts/NotoSansCJKsc-Bold.otf'

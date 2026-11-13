@@ -9,7 +9,7 @@ from PIL import Image
 if sys.argv[1:] != ['--draft']:
     raise SystemExit('仅允许 --draft')
 root = Path(__file__).resolve().parents[1]
-out = root / 'deliverables/review-chapter-05-home-recovery-v3'
+out = root / 'deliverables/章节/第五话/review-chapter-05-home-recovery-v3'
 pages = [out/'pages/page-00-cover.png'] + [out/f'pages/page-{n:02}.png' for n in range(1,18)]
 labels = ['封面（标题待定）','一起玩游戏','累了，靠着妹妹','妹妹摸头','抱着妹妹的腿','抱着妹妹撒娇','去找姐姐','姐姐的提议','叫妈妈','姐姐亲一口','姐姐搂肩','姐姐捧脸','明天去水族馆','小满的请求','二弟答应','小满高兴拥抱','再抱一会儿','背着小满']
 if not all(p.is_file() for p in pages):

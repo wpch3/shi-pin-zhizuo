@@ -16,8 +16,8 @@ import pymupdf
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "deliverables" / "完整人设与合照_V3.pdf"
-OUT_DIR = ROOT / "deliverables"
+OUT_DIR = ROOT / "deliverables/人物资料/人设与合照"
+SRC = OUT_DIR / "完整人设与合照_V3.pdf"
 PNG_DIR = OUT_DIR / "完整人设与合照_PNG版"
 PREVIEW_PDF = OUT_DIR / "character-cards-v3-preview.pdf"  # ASCII 名，规避中文 URL
 COMPAT_PDF = OUT_DIR / "完整人设与合照_V3_兼容版.pdf"
@@ -31,6 +31,8 @@ TITLES = [
 
 
 def main() -> None:
+    if any(p.exists() or p.is_symlink() for p in (PNG_DIR, PREVIEW_PDF, COMPAT_PDF, ZIP_PATH, VIEW_MD)):
+        raise SystemExit('人设交付已存在；为保护文件，禁止原地重建。请复制脚本并使用新的输出目录。')
     if not SRC.exists():
         raise SystemExit(f"缺少人设 PDF：{SRC}")
     PNG_DIR.mkdir(parents=True, exist_ok=True)
@@ -97,7 +99,7 @@ def main() -> None:
         "是用户确认的最高视觉基准：**暖纸底、低饱和、细腻手绘线、轻薄水彩填色、自然五官、",
         "克制阴影、写实头身比**。生图必须与此并排比对，不得只比脸。",
         "",
-        "![家族角色设定资料集](../art/reference/family-character-design-v3.jpg)",
+        "![家族角色设定资料集](../../../art/reference/family-character-design-v3.jpg)",
         "",
     ]
     for name, label in [
@@ -105,9 +107,9 @@ def main() -> None:
         ("younger-sister", "江辰希｜妹妹"), ("niece", "小满｜小侄女"),
         ("eldest-brother", "江昭远｜大哥"), ("father", "江怀川｜父亲"), ("mother", "沈静宜｜母亲"),
     ]:
-        lines += [f"### {label}", "", f"![{label}](../art/character-v3/{name}.png)", ""]
-    lines += ["文字设定（身份/经历/性格/外貌）见 `../data/characters.json`，",
-              "画风锁定条款见 `../docs/V3角色与画风锁定.md`。", ""]
+        lines += [f"### {label}", "", f"![{label}](../../../art/character-v3/{name}.png)", ""]
+    lines += ["文字设定（身份/经历/性格/外貌）见 `../../../data/characters.json`，",
+              "画风锁定条款见 `../../../docs/V3角色与画风锁定.md`。", ""]
     VIEW_MD.write_text("\n".join(lines), encoding="utf-8")
     doc.close()
 

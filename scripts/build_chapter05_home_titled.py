@@ -7,8 +7,10 @@ from PIL import Image, ImageDraw, ImageFont
 if sys.argv[1:] != ['--draft']:
     raise SystemExit('仅允许 --draft')
 root = Path(__file__).resolve().parents[1]
-source = root / 'deliverables/review-chapter-05-home-recovery-v3/pages'
-out = root / 'deliverables/review-chapter-05-home-titled/pages'
+source = root / 'deliverables/章节/第五话/review-chapter-05-home-recovery-v3/pages'
+out = root / 'deliverables/章节/第五话/review-chapter-05-home-titled/pages'
+if out.exists() and any(out.iterdir()):
+    raise SystemExit('第五话确认版已有页面；为保护作品，禁止原地重建。请复制脚本并使用新的输出目录。')
 out.mkdir(parents=True, exist_ok=True)
 font = root / 'assets/fonts/NotoSansCJKsc-Bold.otf'
 with Image.open(source/'page-00-cover.png') as original:

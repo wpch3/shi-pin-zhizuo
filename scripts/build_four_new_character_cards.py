@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 import fitz
 
 root = Path(__file__).resolve().parents[1]
-out = root/'deliverables/新人物设定试案v1'
+out = root/'deliverables/人物资料/新人物设定试案v1'
 out.mkdir(parents=True, exist_ok=True)
 reg = str(root/'assets/fonts/NotoSansCJKsc-Regular.otf')
 bold = str(root/'assets/fonts/NotoSansCJKsc-Bold.otf')

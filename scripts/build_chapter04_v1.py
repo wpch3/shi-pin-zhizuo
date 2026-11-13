@@ -121,8 +121,8 @@ def save_png(im, path):
 
 CACHE = ROOT / 'deliverables/.chapter04-build-cache.json'
 CACHE_KEY_FILES = [Path(__file__).resolve(), ROOT / 'scripts/pdf_export.py']
-READING_PDF = ROOT / 'deliverables/第四话_陪小满.pdf'
-VERTICAL_PDF = ROOT / 'deliverables/第四话_竖屏全页漫画.pdf'
+READING_PDF = ROOT / 'deliverables/章节/第四话/原交付/第四话_陪小满.pdf'
+VERTICAL_PDF = ROOT / 'deliverables/章节/第四话/原交付/第四话_竖屏全页漫画.pdf'
 
 
 def _digest(paths):

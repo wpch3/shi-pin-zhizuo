@@ -20,16 +20,17 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 D = ROOT / 'deliverables'
+OUTPUT = D / '章节/第四话/原交付'
 PAGES = sorted((D / 'full-v4/chapter-04').glob('page-*.png'))
 VERT = sorted((D / 'full-v4-vertical/chapter-04').glob('page-*.png'))
 N = 10
 LOSSLESS = [
-    (D / '第四话_陪小满.pdf', PAGES, 691.2, 921.6),
-    (D / '第四话_竖屏全页漫画.pdf', VERT, 691.2, 1030.08),
+    (OUTPUT / '第四话_陪小满.pdf', PAGES, 691.2, 921.6),
+    (OUTPUT / '第四话_竖屏全页漫画.pdf', VERT, 691.2, 1030.08),
 ]
-PREVIEW = D / '第四话_轻量在线预览.pdf'
-ZIP = D / '第四话_10页PNG图片版.zip'
-GALLERY = D / '第四话_逐页看图.md'
+PREVIEW = OUTPUT / '第四话_轻量在线预览.pdf'
+ZIP = OUTPUT / '第四话_10页PNG图片版.zip'
+GALLERY = OUTPUT / '第四话_逐页看图.md'
 
 
 def check_lossless(pdf_path, pngs, expected_w, expected_h):
@@ -88,7 +89,7 @@ def check_zip_and_gallery():
     links = [ln.split('](')[1].rstrip(')') for ln in text.splitlines() if ln.startswith('![')]
     assert len(links) == N, f'看图页 {len(links)} 张图'
     for rel in links:
-        assert (D / rel).exists(), f'看图页链接失效: {rel}'
+        assert (GALLERY.parent / rel).exists(), f'看图页链接失效: {rel}'
     print(f'[OK] {GALLERY.name}: {N} 个相对路径全部有效')
 
 

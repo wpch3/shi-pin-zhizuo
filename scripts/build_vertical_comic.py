@@ -271,5 +271,5 @@ for i, c in enumerate(DATA["characters"], 1):
 family = family_card()
 family.save(OUT_CARDS / "08-family.png")
 card_pages.append(family)
-card_pages[0].save(ROOT / "deliverables/完整人设与合照.pdf", save_all=True, append_images=card_pages[1:], resolution=150)
+card_pages[0].save(ROOT / "deliverables/人物资料/人设与合照/完整人设与合照.pdf", save_all=True, append_images=card_pages[1:], resolution=150)
 print("Built", len(comic_pages), "comic pages and", len(card_pages), "character/family pages")

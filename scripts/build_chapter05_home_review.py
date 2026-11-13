@@ -9,7 +9,7 @@ from draft_output import save_png_if_changed
 if sys.argv[1:] != ['--draft']:
     raise SystemExit('仅允许 --draft')
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'deliverables/review-chapter-05-home/pages'
+OUT = ROOT / 'deliverables/章节/第六话/review-chapter-05-home/pages'
 OUT.mkdir(parents=True, exist_ok=True)
 FONT = ROOT / 'assets/fonts/NotoSansCJKsc-Bold.otf'
 W,H=1440,1920
